@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  departure_date: 2023-06-13 17:30:31
+  arrival_date: 2023-06-13 17:30:31
+  departure_city: MyString
+  arrival_city: MyString
+  price: 1.5
+  airline: one
+  origin_airport: one
+  destination_airport: one
+
+two:
+  departure_date: 2023-06-13 17:30:31
+  arrival_date: 2023-06-13 17:30:31
+  departure_city: MyString
+  arrival_city: MyString
+  price: 1.5
+  airline: two
+  origin_airport: two
+  destination_airport: two
