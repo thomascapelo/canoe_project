@@ -7,8 +7,8 @@ class CreateFlights < ActiveRecord::Migration[7.0]
       t.string :arrival_city
       t.float :price
       t.references :airline, null: false, foreign_key: true
-      t.references :origin_airport, null: false, foreign_key: true
-      t.references :destination_airport, null: false, foreign_key: true
+      t.references :origin_airport, null: false, foreign_key: { to_table: :airports }
+      t.references :destination_airport, null: false, foreign_key: { to_table: :airports }
 
       t.timestamps
     end
