@@ -3,7 +3,8 @@ class FlightsController < ApplicationController
   def search
     @flights = Flight.search_flights(search_params)
 
-    redirect_to search_flights_path
+    # redirect_to search_flights_path
+    render 'search_results'
   end
 
   # def show

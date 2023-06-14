@@ -13,9 +13,10 @@ da = Airline.create(name: "Delta Airlines")
 puts "Airlines created"
 
 # Flights
-flight_1 = Flight.create(departure_date: DateTime.new(2021, 9, 1, 8, 0, 0), arrival_date: DateTime.new(2021, 9, 1, 9, 0, 0), departure_city: "San Francisco", arrival_city: "Los Angeles", price: 100, airline_id: aa.id, origin_airport_id: san_francisco.id, destination_airport_id: los_angeles.id)
-flight_2 = Flight.create(departure_date: DateTime.new(2023, 10, 1, 8, 0, 0), arrival_date: DateTime.new(2023, 12, 1, 9, 0, 0), departure_city: "Los Angeles", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: san_francisco.id, destination_airport_id: london.id)
-flight_3 = Flight.create(departure_date: DateTime.new(2023, 10, 1, 8, 0, 0), arrival_date: DateTime.new(2023, 12, 1, 9, 0, 0), departure_city: "New York", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: new_york.id, destination_airport_id: london.id)
+flight_1 = Flight.create(departure_date: Date.today, arrival_date: Date.tomorrow, departure_city: "San Francisco", arrival_city: "Los Angeles", price: 200, airline_id: da.id, origin_airport_id: san_francisco.id, destination_airport_id: los_angeles.id)
+flight_2 = Flight.create(departure_date: Date.today, arrival_date: Date.tomorrow, departure_city: "San Francisco", arrival_city: "Los Angeles", price: 100, airline_id: aa.id, origin_airport_id: san_francisco.id, destination_airport_id: los_angeles.id)
+flight_3 = Flight.create(departure_date: Date.today, arrival_date: Date.tomorrow, departure_city: "Los Angeles", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: san_francisco.id, destination_airport_id: london.id)
+flight_4 = Flight.create(departure_date: Date.today, arrival_date: Date.tomorrow, departure_city: "New York", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: new_york.id, destination_airport_id: london.id)
 puts "Flights created"
 
 # Users
