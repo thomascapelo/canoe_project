@@ -1,10 +1,11 @@
-<h1>Welcome to search results</h1>
+<h1>Flight Search Results</h1>
 
-<%=  @flights.each do |flight| %>
-  <%= flight.departure_city %>
-  <%= flight.arrival_city %>
-  <%= flight.departure_date %>
-  <%= flight.arrival_date %>
-  <%= flight.price %>
-
+<% @flights.each do |flight| %>
+  <div>
+    <p>Origin: <%= flight.departure_city %></p>
+    <p>Destination: <%= flight.arrival_city %></p>
+    <p>Departure Date: <%= flight.departure_date %></p>
+    <p>Arrival Date: <%= flight.arrival_date %></p>
+    <p>Price: <%= flight.price %></p>
+  </div>
 <% end %>
