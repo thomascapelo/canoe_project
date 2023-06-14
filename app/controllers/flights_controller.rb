@@ -1,6 +1,9 @@
 class FlightsController < ApplicationController
 
   def search_results
+    @departure_city = params[:departure_city]
+    @arrival_city = params[:arrival_city]
+    
     @flights = Flight.where(search_params)
 
     render 'search_results'

@@ -1,11 +1,19 @@
-<h1>Flight Search Results</h1>
+ <h1 class="text-3xl tracking-wide text-center">
+      Canoë Flights
+  </h1>
 
 <% @flights.each do |flight| %>
-  <div>
-    <p>Origin: <%= flight.departure_city %></p>
-    <p>Destination: <%= flight.arrival_city %></p>
-    <p>Departure Date: <%= flight.departure_date %></p>
-    <p>Arrival Date: <%= flight.arrival_date %></p>
-    <p>Price: <%= flight.price %></p>
+  <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
+    <div class="flex">
+      <p><strong><%= flight.departure_city %></strong></p>
+      <p class="ml-2">to</p>
+      <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
+    </div>
+    <div class="flex">
+      <p>Departure: <%= flight.departure_date.strftime('%H:%M') %></p>
+      <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%H:%M') %></p>
+    </div>
+    <p><%= flight.price %>$</p>
   </div>
 <% end %>
+
