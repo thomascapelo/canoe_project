@@ -1,9 +1,10 @@
 class FlightsController < ApplicationController
 
-  def search
-    @flights = Flight.search_flights(search_params)
+  def search_results
+    @flights = Flight.where(search_params)
 
-    redirect_to search_flights_path
+    render 'search_results'
+    # redirect_to search_flights_path
   end
 
   # def show
@@ -13,6 +14,7 @@ class FlightsController < ApplicationController
   private
 
   def search_params
-    params.permit(:origin, :destination, :departure_date, :arrival_date, :passengers)
+    params.permit(:departure_city, :arrival_city, :departure_date, :arrival_date)
   end
+  
 end

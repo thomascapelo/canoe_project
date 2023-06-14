@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
    # Flights
    resources :flights, only: [:index, :show, :search_results]
-   get 'search_results', to: 'flights#search_results', as: 'search_flights'
+   get 'search_results', to: 'flights#search_results', as: 'search_results'
  
    # Bookings
    resources :bookings, only: [:new, :create, :show]
