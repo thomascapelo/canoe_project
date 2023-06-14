@@ -10,7 +10,8 @@ Rails.application.routes.draw do
    resources :airlines, only: [:index, :show]
 
    # Flights
-   resources :flights, only: [:index, :show]
+   resources :flights, only: [:index, :show, :search_results]
+   get 'search_results', to: 'flights#search_results', as: 'search_flights'
  
    # Bookings
    resources :bookings, only: [:new, :create, :show]
@@ -19,5 +20,7 @@ Rails.application.routes.draw do
    resources :users, only: [:new, :create]
  
    # Custom Routes
-   get '/search', to: 'flights#search', as: 'flight_search'
+  #  get '/search', to: 'flights#search', as: 'flight_search'
+  # get '/flights/search', to: 'flights#search_results', as: 'search_flights'
+
 end

@@ -2,7 +2,13 @@ class FlightsController < ApplicationController
 
   def search
     @flights = Flight.search_flights(search_params)
+
+    redirect_to search_flights_path
   end
+
+  # def show
+  #   @flight = Flight.find(params[:id])
+  # end
 
   private
 
