@@ -21,6 +21,5 @@ class FlightsController < ApplicationController
           .merge(departure_date: Date.parse(params[:departure_date]).beginning_of_day..Date.parse(params[:departure_date]).end_of_day)
           .merge(arrival_date: Date.parse(params[:arrival_date]).beginning_of_day..Date.parse(params[:arrival_date]).end_of_day)
   end
-  
-  
+    
 end

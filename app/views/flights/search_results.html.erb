@@ -10,10 +10,11 @@
       <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
     </div>
     <div class="flex">
-      <p>Departure: <%= flight.departure_date.strftime('%H:%M') %></p>
-      <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%H:%M') %></p>
+      <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
+      <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
     </div>
     <p><%= flight.price %>$</p>
   </div>
 <% end %>
+
 

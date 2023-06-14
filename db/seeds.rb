@@ -15,6 +15,7 @@ puts "Airlines created"
 # Flights
 flight_1 = Flight.create(departure_date: DateTime.now, arrival_date: DateTime.now + 1.day + 1.hour, departure_city: "San Francisco", arrival_city: "Los Angeles", price: 200, airline_id: da.id, origin_airport_id: san_francisco.id, destination_airport_id: los_angeles.id)
 flight_2 = Flight.create(departure_date: DateTime.now, arrival_date: DateTime.now + 1.day + 1.hour, departure_city: "San Francisco", arrival_city: "Los Angeles", price: 100, airline_id: aa.id, origin_airport_id: san_francisco.id, destination_airport_id: los_angeles.id)
+flight_2 = Flight.create(departure_date: DateTime.now, arrival_date: DateTime.now + 1.day + 1.hour, departure_city: "Los Angeles", arrival_city: "San Francisco", price: 150, airline_id: aa.id, origin_airport_id: los_angeles.id, destination_airport_id: san_francisco.id)
 flight_3 = Flight.create(departure_date: DateTime.now, arrival_date: DateTime.now + 1.day + 1.hour, departure_city: "Los Angeles", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: san_francisco.id, destination_airport_id: london.id)
 flight_4 = Flight.create(departure_date: DateTime.now, arrival_date: DateTime.now + 1.day + 1.hour, departure_city: "New York", arrival_city: "London", price: 300, airline_id: ba.id, origin_airport_id: new_york.id, destination_airport_id: london.id)
 puts "Flights created"
