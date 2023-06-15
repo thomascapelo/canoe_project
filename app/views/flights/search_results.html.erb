@@ -1,19 +1,41 @@
- <h1 class="text-3xl tracking-wide text-center">
-      Canoë Flights
-  </h1>
+<h1 class="text-3xl tracking-wide text-center">
+  Canoë Flights
+</h1>
 
-<% @flights.each do |flight| %>
+<div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
+  <h2 class="text-xl font-semibold mb-4">Outbound Flight</h2>
+  <% @outbound_flights.each do |flight| %>
+    <div class="flight-details">
+      <div class="flex">
+        <p><strong><%= flight.departure_city %></strong></p>
+        <p class="ml-2">to</p>
+        <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
+      </div>
+      <div class="flex">
+        <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
+        <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
+      </div>
+      <p><%= flight.price %>$</p>
+    </div>
+  <% end %>
+</div>
+
+<% if @return_flights.present? %>
   <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
-    <div class="flex">
-      <p><strong><%= flight.departure_city %></strong></p>
-      <p class="ml-2">to</p>
-      <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
-    </div>
-    <div class="flex">
-      <p>Departure: <%= flight.departure_date.strftime('%H:%M') %></p>
-      <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%H:%M') %></p>
-    </div>
-    <p><%= flight.price %>$</p>
+    <h2 class="text-xl font-semibold mb-4">Return Flights</h2>
+    <% @return_flights.each do |flight| %>
+      <div class="flight-details">
+        <div class="flex">
+          <p><strong><%= flight.departure_city %></strong></p>
+          <p class="ml-2">to</p>
+          <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
+        </div>
+        <div class="flex">
+          <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
+          <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
+        </div>
+        <p><%= flight.price %>$</p>
+      </div>
+    <% end %>
   </div>
 <% end %>
-
