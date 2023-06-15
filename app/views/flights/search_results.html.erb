@@ -15,6 +15,7 @@
         <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
         <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
         <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
+        <p>Number of Adults: <%= @adults %></p>
       </div>
       <p><%= flight.price %>$</p>
     </div>
@@ -35,6 +36,7 @@
           <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
           <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
           <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
+          <p>Number of Adults: <%= @adults %></p>
         </div>
         <p><%= flight.price %>$</p>
       </div>
