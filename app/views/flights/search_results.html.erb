@@ -4,17 +4,18 @@
 
 <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
   <h2 class="text-xl font-semibold mb-4">Outbound Flight</h2>
+  <%= puts @outbound_flights %>
   <% @outbound_flights.each do |flight| %>
     <div class="flight-details">
       <div class="flex">
-        <p><strong><%= flight.departure_city %></strong></p>
+        <p><strong><%= flight.itineraries.first.segments[0].departure['iataCode'] %></strong></p>
         <p class="ml-2">to</p>
-        <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
+        <p class="ml-2"><strong><%= flight.itineraries.first.segments[0].arrival['iataCode'] %></strong></p>
       </div>
       <div class="flex">
-        <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
-        <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
-        <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
+        <p>Departure: <%= flight.itineraries.first.segments[0].departure['at'] %></p>
+        <p class="ml-2">Arrival: <%= flight.itineraries.first.segments[0].arrival['at'] %></p>
+        <p class="ml-2">Flight Time: <%= flight.itineraries.first.duration %></p>
         <p>Number of Adults: <%= @adults %></p>
       </div>
       <p><%= flight.price %>$</p>
@@ -28,14 +29,14 @@
     <% @return_flights.each do |flight| %>
       <div class="flight-details">
         <div class="flex">
-          <p><strong><%= flight.departure_city %></strong></p>
+          <p><strong><%= flight.itineraries.first.segments[0].departure['iataCode'] %></strong></p>
           <p class="ml-2">to</p>
-          <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
+          <p class="ml-2"><strong><%= flight.itineraries.first.segments[0].arrival['iataCode'] %></strong></p>
         </div>
         <div class="flex">
-          <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
-          <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
-          <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
+          <p>Departure: <%= flight.itineraries.first.segments[0].departure['at'] %></p>
+          <p class="ml-2">Arrival: <%= flight.itineraries.first.segments[0].arrival['at'] %></p>
+          <p class="ml-2">Flight Time: <%= flight.itineraries.first.duration %></p>
           <p>Number of Adults: <%= @adults %></p>
         </div>
         <p><%= flight.price %>$</p>

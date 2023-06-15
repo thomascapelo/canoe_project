@@ -26,26 +26,38 @@ class FlightsController < ApplicationController
   def search_flights(origin, destination, date)
     api_key = 'E3QJBG9aB36ZF3tKCopetWORIvV7NYAC'
     api_secret = 'Cu94OhFnMVAWGuJo'
-
+  
     uri = URI("https://api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{date}")
-
+  
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-
+  
     request = Net::HTTP::Get.new(uri)
     request['Authorization'] = "Bearer #{api_key}:#{api_secret}"
-
+  
     response = http.request(request)
-
+  
     if response.code.to_i == 200
       flight_offers = JSON.parse(response.body)
-      # Process the flight offers and return the flights
+      flights = []
+  
+      flight_offers['data'].each do |flight_offer|
+        flight = Flight.new
+        flight.departure_city = origin
+        flight.arrival_city = destination
+        flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
+        flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].first['arrival']['at'])
+        flight.flight_time = flight_offer['itineraries'].first['duration']
+        flight.price = flight_offer['price']
+        flights << flight
+      end
+  
+      return flights
     else
-      # Handle error
       flash[:alert] = 'There was an error with your search. Please try again.'
-      [] # Return an empty array in case of error
+      return []
     end
-  end
+  end  
 
   def calculate_flight_time(departure_date, arrival_date)
     flight_time = (arrival_date - departure_date) / 1.hour
