@@ -5,8 +5,14 @@ class FlightsController < ApplicationController
   def search_results
     search_params # Call the method to set the instance variables
 
-    @outbound_flights = search_flights(@departure_city, @arrival_city, @departure_date)
-    @return_flights = search_flights(@arrival_city, @departure_city, @return_date)
+    access_token = get_access_token('E3QJBG9aB36ZF3tKCopetWORIvV7NYAC', 'Cu94OhFnMVAWGuJo')
+    if access_token.nil?
+      flash[:alert] = 'Failed to retrieve access token.'
+      redirect_to root_path and return
+    end
+
+    @outbound_flights = search_flights(@departure_city, @arrival_city, @departure_date, access_token)
+    @return_flights = search_flights(@arrival_city, @departure_city, @return_date, access_token)
 
     @flights = @outbound_flights + @return_flights
 
@@ -23,17 +29,38 @@ class FlightsController < ApplicationController
 
   private
 
-  def search_flights(origin, destination, date)
-    api_key = 'E3QJBG9aB36ZF3tKCopetWORIvV7NYAC'
-    api_secret = 'Cu94OhFnMVAWGuJo'
-  
-    uri = URI("https://api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{date}")
+  def get_access_token(client_id, client_secret)
+    uri = URI('https://test.api.amadeus.com/v1/security/oauth2/token')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Post.new(uri.path)
+    request.set_form_data(
+      'grant_type' => 'client_credentials',
+      'client_id' => client_id,
+      'client_secret' => client_secret
+    )
+
+    response = http.request(request)
+
+    if response.code == '200'
+      access_token = JSON.parse(response.body)['access_token']
+      # Store or use the access token as needed
+      return access_token
+    else
+      # Handle the error case
+      return nil
+    end
+  end
+
+  def search_flights(origin, destination, date, access_token)
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{date}&adults=1&nonStop=false&max=250")
   
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
   
     request = Net::HTTP::Get.new(uri)
-    request['Authorization'] = "Bearer #{api_key}:#{api_secret}"
+    request['Authorization'] = "Bearer #{access_token}"
   
     response = http.request(request)
   
@@ -57,7 +84,8 @@ class FlightsController < ApplicationController
       flash[:alert] = 'There was an error with your search. Please try again.'
       return []
     end
-  end  
+  end
+  
 
   def calculate_flight_time(departure_date, arrival_date)
     flight_time = (arrival_date - departure_date) / 1.hour
