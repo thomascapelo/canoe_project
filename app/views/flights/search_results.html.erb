@@ -4,7 +4,7 @@
 
 <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
   <h2 class="text-xl font-semibold mb-4">Outbound Flight</h2>
-  <% @outbound_flights.each do |flight| %>
+  <% @flights.each do |flight| %>
     <div class="flight-details">
       <div class="flex">
         <p><strong><%= flight.itineraries.first.segments[0].departure['iataCode'] %></strong></p>
@@ -12,34 +12,12 @@
         <p class="ml-2"><strong><%= flight.itineraries.first.segments[0].arrival['iataCode'] %></strong></p>
       </div>
       <div class="flex">
-        <p>Departure: <%= flight.itineraries.first.segments[0].departure['at'] %></p>
-        <p class="ml-2">Arrival: <%= flight.itineraries.first.segments[0].arrival['at'] %></p>
-        <p class="ml-2">Flight Time: <%= flight.itineraries.first.duration %></p>
+        <p>Departure: <%= flight.departure_date.strftime('%Y-%m-%d') %></p>
+        <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%Y-%m-%d') %></p>
+        <p class="ml-2">Flight Time: <%= flight.flight_time %></p>
         <p>Number of Adults: <%= @adults %></p>
       </div>
       <p><%= flight.price %>$</p>
     </div>
   <% end %>
 </div>
-
-<% if @return_flights.present? %>
-  <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
-    <h2 class="text-xl font-semibold mb-4">Return Flights</h2>
-    <% @return_flights.each do |flight| %>
-      <div class="flight-details">
-        <div class="flex">
-          <p><strong><%= flight.itineraries.first.segments[0].departure['iataCode'] %></strong></p>
-          <p class="ml-2">to</p>
-          <p class="ml-2"><strong><%= flight.itineraries.first.segments[0].arrival['iataCode'] %></strong></p>
-        </div>
-        <div class="flex">
-          <p>Departure: <%= flight.itineraries.first.segments[0].departure['at'] %></p>
-          <p class="ml-2">Arrival: <%= flight.itineraries.first.segments[0].arrival['at'] %></p>
-          <p class="ml-2">Flight Time: <%= flight.itineraries.first.duration %></p>
-          <p>Number of Adults: <%= @adults %></p>
-        </div>
-        <p><%= flight.price %>$</p>
-      </div>
-    <% end %>
-  </div>
-<% end %>
