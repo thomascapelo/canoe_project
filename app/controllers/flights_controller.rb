@@ -16,21 +16,17 @@ class FlightsController < ApplicationController
     logger.debug "Arrival City: #{@arrival_city}"
     logger.debug "Departure Date: #{@departure_date}"
     logger.debug "Return Date: #{@return_date}"
+    logger.debug "Adults: #{@adults}"
   
-    @outbound_flights = search_flights(@departure_city, @arrival_city, @departure_date, access_token)
-    @return_flights = search_flights(@arrival_city, @departure_city, @return_date, access_token)
+    @flights = search_flights(@departure_city, @arrival_city, @departure_date, @return_date, @adults, access_token)
 
     # @flights = @outbound_flights + @return_flights
 
-    @outbound_flights.each do |flight|
+    @flights.each do |flight|
       flight.flight_time = calculate_flight_time(flight.departure_date, flight.arrival_date)
     end
 
-    @return_flights.each do |flight|
-      flight.flight_time = calculate_flight_time(flight.departure_date, flight.arrival_date)
-    end
-    logger.debug "Outbound Flights: #{@outbound_flights}"
-    logger.debug "Return Flights: #{@return_flights}"
+    logger.debug "Flights: #{flights}"
     render 'search_results'
   end
 
@@ -61,7 +57,7 @@ class FlightsController < ApplicationController
     end
   end
 
-  def search_flights(origin, destination, departure_date, access_token)
+  def search_flights(origin, destination, departure_date, return_date, adults access_token)
     uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date}&returnDate=#{return_date}&adults=#{adults}")
    
   
@@ -94,7 +90,7 @@ class FlightsController < ApplicationController
       return flights
     else
       flash[:alert] = 'There was an error with your search. Please try again.'
-      return flight_offers
+      return [ ]
     end
   end
   
