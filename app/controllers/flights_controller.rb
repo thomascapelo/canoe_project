@@ -11,10 +11,16 @@ class FlightsController < ApplicationController
       redirect_to root_path and return
     end
 
+    logger.debug "Access Token: #{access_token}"
+    logger.debug "Departure City: #{@departure_city}"
+    logger.debug "Arrival City: #{@arrival_city}"
+    logger.debug "Departure Date: #{@departure_date}"
+    logger.debug "Return Date: #{@return_date}"
+  
     @outbound_flights = search_flights(@departure_city, @arrival_city, @departure_date, access_token)
     @return_flights = search_flights(@arrival_city, @departure_city, @return_date, access_token)
 
-    @flights = @outbound_flights + @return_flights
+    # @flights = @outbound_flights + @return_flights
 
     @outbound_flights.each do |flight|
       flight.flight_time = calculate_flight_time(flight.departure_date, flight.arrival_date)
@@ -23,10 +29,12 @@ class FlightsController < ApplicationController
     @return_flights.each do |flight|
       flight.flight_time = calculate_flight_time(flight.departure_date, flight.arrival_date)
     end
-
+    logger.debug "Outbound Flights: #{@outbound_flights}"
+    logger.debug "Return Flights: #{@return_flights}"
     render 'search_results'
   end
 
+####### PRIVATE METHOD #######
   private
 
   def get_access_token(client_id, client_secret)
@@ -64,6 +72,9 @@ class FlightsController < ApplicationController
   
     response = http.request(request)
   
+    puts "Response Code: #{response.code}"
+    puts "Response Body: #{response.body}"
+  
     if response.code.to_i == 200
       flight_offers = JSON.parse(response.body)
       flights = []
@@ -82,11 +93,10 @@ class FlightsController < ApplicationController
       return flights
     else
       flash[:alert] = 'There was an error with your search. Please try again.'
-      return []
+      return flight_offers
     end
   end
   
-
   def calculate_flight_time(departure_date, arrival_date)
     flight_time = (arrival_date - departure_date) / 1.hour
     flight_time.round(2)
