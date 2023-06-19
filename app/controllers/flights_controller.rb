@@ -58,8 +58,7 @@ class FlightsController < ApplicationController
   end
 
   def search_flights(origin, destination, departure_date, return_date, adults, access_token)
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date.strftime('%Y-%m-%d')}&returnDate=#{return_date.strftime('%Y-%m-%d')}&adults=#{adults}")
-  
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date.strftime('%Y-%m-%d')}&returnDate=#{return_date.strftime('%Y-%m-%d')}&adults=#{adults}")  
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
   
@@ -80,9 +79,10 @@ class FlightsController < ApplicationController
         flight.departure_city = origin
         flight.arrival_city = destination
         flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
-        flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].first['arrival']['at'])
+        flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
         flight.flight_time = flight_offer['itineraries'].first['duration']
         flight.price = flight_offer['price']['total'].to_f # Convert the 'total' value to float
+        flight.itineraries = flight_offer['itineraries'] # Add itineraries data to the flight object
         flights << flight
       end
   
@@ -92,6 +92,7 @@ class FlightsController < ApplicationController
       return []
     end
   end
+  
   
   
   
