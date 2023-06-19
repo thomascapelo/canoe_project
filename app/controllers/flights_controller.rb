@@ -61,8 +61,9 @@ class FlightsController < ApplicationController
     end
   end
 
-  def search_flights(origin, destination, date, access_token)
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{date}&adults=1&nonStop=false&max=250")
+  def search_flights(origin, destination, departure_date, access_token)
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date}&returnDate=#{return_date}&adults=#{adults}")
+   
   
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
