@@ -4,40 +4,38 @@
 
 <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
   <h2 class="text-xl font-semibold mb-4">Outbound Flight</h2>
-  <% @outbound_flights.each do |flight| %>
+  <% @flights.each do |flight| %>
     <div class="flight-details">
-      <div class="flex">
-        <p><strong><%= flight.departure_city %></strong></p>
-        <p class="ml-2">to</p>
-        <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
-      </div>
-      <div class="flex">
-        <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
-        <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
-        <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
-      </div>
-      <p><%= flight.price %>$</p>
+      <% flight.itineraries.each do |itinerary| %>
+        <div class="itinerary">
+          <% itinerary['segments'].each_with_index do |segment, index| %>
+            <p>
+              <strong><%= segment['departure']['iataCode'] %></strong>
+              <%= index < itinerary['segments'].size - 1 ? 'to' : '' %>
+            </p>
+            <% if segment['numberOfStops'] > 0 %>
+              <% segment['numberOfStops'].times do |stop_index| %>
+                <p class="ml-2"><%= segment['stops'][stop_index]['iataCode'] %></p>
+              <% end %>
+            <% end %>
+            <% if index == itinerary['segments'].size - 1 %>
+              <p class="ml-2">
+                <strong><%= segment['arrival']['iataCode'] %></strong>
+                (Arrival time: <%= segment['arrival']['at'] %>)
+              </p>
+            <% end %>
+          <% end %>
+          <p class="mt-2">
+            Total duration: <%= itinerary['duration'] %>
+          </p>
+        </div>
+      <% end %>
+      <p class="mt-4">
+          <p class="mt-4">
+            Total Price: <%= flight['price'] %>
+          </p>
+      </p>
     </div>
   <% end %>
 </div>
 
-<% if @return_flights.present? %>
-  <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
-    <h2 class="text-xl font-semibold mb-4">Return Flights</h2>
-    <% @return_flights.each do |flight| %>
-      <div class="flight-details">
-        <div class="flex">
-          <p><strong><%= flight.departure_city %></strong></p>
-          <p class="ml-2">to</p>
-          <p class="ml-2"><strong><%= flight.arrival_city %></strong></p>
-        </div>
-        <div class="flex">
-          <p>Departure: <%= flight.departure_date.strftime('%I:%M %p') %></p>
-          <p class="ml-2">Arrival: <%= flight.arrival_date.strftime('%I:%M %p') %></p>
-          <p class="ml-2">Flight Time: <%= flight.flight_time %> hours</p>
-        </div>
-        <p><%= flight.price %>$</p>
-      </div>
-    <% end %>
-  </div>
-<% end %>
