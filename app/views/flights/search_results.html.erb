@@ -4,16 +4,38 @@
 
 <div class="bg-white rounded-lg mx-64 my-8 py-4 px-4">
   <h2 class="text-xl font-semibold mb-4">Outbound Flight</h2>
- <% @flights.each do |flight| %>
-  <div class="flight-details">
-    <% flight.itineraries.each do |itinerary| %>
-      <div class="itinerary">
-        <p><strong><%= itinerary['segments'].first['departure']['iataCode'] %></strong></p>
-        <p class="ml-2">to</p>
-        <p class="ml-2"><strong><%= itinerary['segments'].last['arrival']['iataCode'] %></strong></p>
-      </div>
-    <% end %>
-  </div>
-<% end %>
-
+  <% @flights.each do |flight| %>
+    <div class="flight-details">
+      <% flight.itineraries.each do |itinerary| %>
+        <div class="itinerary">
+          <% itinerary['segments'].each_with_index do |segment, index| %>
+            <p>
+              <strong><%= segment['departure']['iataCode'] %></strong>
+              <%= index < itinerary['segments'].size - 1 ? 'to' : '' %>
+            </p>
+            <% if segment['numberOfStops'] > 0 %>
+              <% segment['numberOfStops'].times do |stop_index| %>
+                <p class="ml-2"><%= segment['stops'][stop_index]['iataCode'] %></p>
+              <% end %>
+            <% end %>
+            <% if index == itinerary['segments'].size - 1 %>
+              <p class="ml-2">
+                <strong><%= segment['arrival']['iataCode'] %></strong>
+                (Arrival time: <%= segment['arrival']['at'] %>)
+              </p>
+            <% end %>
+          <% end %>
+          <p class="mt-2">
+            Total duration: <%= itinerary['duration'] %>
+          </p>
+        </div>
+      <% end %>
+      <p class="mt-4">
+          <p class="mt-4">
+            Total Price: <%= flight['price'] %>
+          </p>
+      </p>
+    </div>
+  <% end %>
 </div>
+
