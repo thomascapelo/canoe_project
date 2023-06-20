@@ -19,7 +19,9 @@
         <% segments = itinerary['segments'] %>
         <% date_departure_calcul = Time.parse(segments.first['departure']['at']).strftime('%Y/%m/%d') %>
         <% arrival_departure_calcul = Time.parse(segments.last['arrival']['at']).strftime('%Y/%m/%d') %>
-        <% operating_airlines = segments.map { |segment| segment['operating']['carrierCode'] }.uniq %>
+        <% operating_airline_codes = segments.map { |segment| segment["operating"]["carrierCode"] }.uniq %>
+        <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
+
                       <%# THIS IS THE DISPLAYED FLIGHT INFO %>
         <p>
           <%= Time.parse(segments.first['departure']['at']).strftime('%H:%M') %> -
@@ -33,17 +35,19 @@
         <p>
           <%= segments.first['departure']['iataCode'] %> - <%= segments.last['arrival']['iataCode'] %>
         </p>
+<%# Checck Airline Operating the flights %>
         <% if operating_airlines.size == 1 %>
-          <p>
-            Operating Airline: <%= operating_airlines.first %>
+          <p class="text-sm">
+            Flights operated by <%= operating_airlines.first %>
           </p>
         <% else %>
           <p>
-            Main Operating Airline: <%= operating_airlines.join(', ') %>
+            Main Operating Airline is <%= operating_airlines.join(', ') %>
           </p>
         <% end %>
       </div>
     <% end %>
+<%# Price display %>
     <p class="mt-4 flex-row">
         <strong><%= flight['price'] %>€</strong>
     </p>
