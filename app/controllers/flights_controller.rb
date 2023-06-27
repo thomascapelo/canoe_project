@@ -89,8 +89,7 @@ class FlightsController < ApplicationController
       return []
     end
   end
-  
-        # # # SEARCH AIRLINE NAME IN API # # #
+    # # # SEARCH AIRLINE NAME IN API # # #
   def search_airlines_name(airline_code, access_token)
     uri = URI("https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=#{airline_code}")
     http = Net::HTTP.new(uri.host, uri.port)
@@ -104,8 +103,6 @@ class FlightsController < ApplicationController
     if response.code == '200'
       airline_name = JSON.parse(response.body)['data'].first['businessName'].capitalize
       return airline_name
-    else
-      flash[:alert] = 'There was an error with your airline. Please try again.'
     end
   end
   
