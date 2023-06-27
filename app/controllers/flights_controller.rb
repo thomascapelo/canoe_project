@@ -2,6 +2,7 @@ require 'net/http'
 require 'json'
 
 class FlightsController < ApplicationController  
+  helper_method :search_airlines_name
   def search_results
     search_params # Call the method to set the instance variables
   
@@ -10,14 +11,8 @@ class FlightsController < ApplicationController
       flash[:alert] = 'Failed to retrieve access token.'
       redirect_to root_path and return
     end
-  
-    logger.debug "Access Token: #{access_token}"
-    logger.debug "Departure City: #{@departure_city}"
-    logger.debug "Arrival City: #{@arrival_city}"
-    logger.debug "Departure Date: #{@departure_date}"
-    logger.debug "Return Date: #{@return_date}"
-    logger.debug "Adults: #{@adults}"
-  
+
+    @access_token = access_token
     @flights = search_flights(@departure_city, @arrival_city, @departure_date, @return_date, @adults, access_token)
   
     @flights.each do |flight|
@@ -58,7 +53,8 @@ class FlightsController < ApplicationController
   end
 
   def search_flights(origin, destination, departure_date, return_date, adults, access_token)
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date.strftime('%Y-%m-%d')}&returnDate=#{return_date.strftime('%Y-%m-%d')}&adults=#{adults}&max=6")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date.strftime('%Y-%m-%d')}&returnDate=#{return_date.strftime('%Y-%m-%d')}&adults=#{adults}&max=6&currencyCode=EUR")
+    ###&currencyCode=EUR - Set the currency to EUR ###
     ### max6 at the end of URI to limit the search to 6 flights ###
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
@@ -94,7 +90,24 @@ class FlightsController < ApplicationController
     end
   end
   
-  
+        # # # SEARCH AIRLINE NAME IN API # # #
+  def search_airlines_name(airline_code, access_token)
+    uri = URI("https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=#{airline_code}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    request['Authorization'] = "Bearer #{access_token}"
+
+    response = http.request(request)
+
+    if response.code == '200'
+      airline_name = JSON.parse(response.body)['data'].first['businessName'].capitalize
+      return airline_name
+    else
+      flash[:alert] = 'There was an error with your airline. Please try again.'
+    end
+  end
   
   
   def calculate_flight_time(departure_date, arrival_date)
