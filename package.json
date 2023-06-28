@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "awesomplete": "^1.1.5",
+    "axios": "^1.4.0"
+  }
+}
