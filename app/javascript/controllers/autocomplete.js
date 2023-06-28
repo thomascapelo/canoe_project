@@ -29,14 +29,6 @@ $(document).ready(function() {
       },
       error: function(xhr, textStatus, errorThrown) {
         console.error('Failed to retrieve access token:', errorThrown);
-
-
-           // Toggle visibility of autocomplete container based on suggestions
-           if (response.data.length > 0) {
-            autocompleteContainer.removeClass('hidden');
-          } else {
-            autocompleteContainer.addClass('hidden');
-          }
       }
     });
   }
@@ -64,20 +56,12 @@ $(document).ready(function() {
         // Process API response and display suggestions
         response.data.forEach(function(location) {
           const cityName = location.address.cityName;
-          const countryName = location.address.countryName;
           const iataCode = location.iataCode;
 
-        // Create suggestion element
-        const suggestion = $('<div class="suggestion"></div>');
-        suggestion.text(capitalizeFirstLetter(cityName) + ', ' + capitalizeFirstLetter(countryName) + ' (' + iataCode + ')');
-        suggestion.data('iataCode', iataCode);
-
-        // Function to capitalize the first letter of each word
-        function capitalizeFirstLetter(str) {
-          return str.toLowerCase().replace(/(^|\s)\w/g, function (match) {
-            return match.toUpperCase();
-          });
-        }
+          // Create suggestion element
+          const suggestion = $('<div class="suggestion"></div>');
+          suggestion.text(cityName);
+          suggestion.data('iataCode', iataCode);
 
           // Attach click event listener to populate input field with selected suggestion
           suggestion.on('click', function() {

@@ -1,8 +1,7 @@
 <div class="bg-white rounded-lg my-8 py-4">
   <form class="flex flex-col items-center" action="<%= search_results_path %>" method="GET">
-    <input type="text" id="departure_city" name="departure_city" placeholder="Departure City" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
-    <div id="autocomplete-suggestions" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4"></div>
     <input type="text" id="arrival_city" name="arrival_city" placeholder="Arrival City" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
+    <input type="text" id="departure_city" name="departure_city" placeholder="Departure City" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
     <input type="date" name="departure_date" placeholder="Departure Date" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
     <input type="date" name="return_date" placeholder="Return Date" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
     <input type="number" name="adults" placeholder="Number of Adults" class="w-64 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400 mb-4" />
@@ -10,5 +9,3 @@
   </form>
 </div>
 <div id="autocomplete-suggestions"></div>
-
-<%# Make the autocomplete suggestion appears when needed %>
