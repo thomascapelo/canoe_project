@@ -8,6 +8,7 @@
     <%= stylesheet_link_tag "tailwind", "inter-font", "data-turbo-track": "reload" %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -15,5 +16,7 @@
     <main class="container mx-auto mt-28 px-5">
       <%= yield %>
     </main>
+
+    <div id="autocomplete-suggestions"></div>
   </body>
 </html>
