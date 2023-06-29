@@ -25,7 +25,6 @@ $(document).ready(function() {
       success: function(response) {
         accessToken = response.access_token; // Assign the value to accessToken
         // Use the accessToken in your API requests
-        // ...
       },
       error: function(xhr, textStatus, errorThrown) {
         console.error('Failed to retrieve access token:', errorThrown);
