@@ -54,31 +54,36 @@ $(document).ready(function() {
       },
       success: function(response) {
         // Process API response and display suggestions
+        const maxSuggestions = 5; // Limit the number of suggestions to 5
+        let suggestionCount = 0; // Counter for the number of suggestions
+
         response.data.forEach(function(location) {
           const cityName = location.address.cityName;
           const countryName = location.address.countryName;
           const iataCode = location.iataCode;
 
-        // Create suggestion element
-        const suggestion = $('<div class="suggestion"></div>');
-        suggestion.text(capitalizeFirstLetter(cityName) + ', ' + capitalizeFirstLetter(countryName) + ' (' + iataCode + ')');
-        suggestion.data('iataCode', iataCode);
+          // Create suggestion element
+          const suggestion = $('<div class="suggestion"></div>');
+          suggestion.text(capitalizeFirstLetter(cityName) + ', ' + capitalizeFirstLetter(countryName) + ' (' + iataCode + ')');
+          suggestion.data('iataCode', iataCode);
 
-        // Function to capitalize the first letter of each word
-        function capitalizeFirstLetter(str) {
-          return str.toLowerCase().replace(/(^|\s)\w/g, function (match) {
-            return match.toUpperCase();
-          });
-        }
-
+          // Function to capitalize the first letter of each word
+          function capitalizeFirstLetter(str) {
+            return str.toLowerCase().replace(/(^|\s)\w/g, function (match) {
+              return match.toUpperCase();
+            });
+          }
 
           // Attach click event listener to populate input field with selected suggestion
           suggestion.on('click', function() {
             inputField.val(iataCode);
           });
 
-          // Append suggestion to the container
-          autocompleteContainer.append(suggestion);
+          // Append suggestion to the container if the limit is not exceeded
+          if (suggestionCount < maxSuggestions) {
+            autocompleteContainer.append(suggestion);
+            suggestionCount++;
+          }
         });
       }
     });
