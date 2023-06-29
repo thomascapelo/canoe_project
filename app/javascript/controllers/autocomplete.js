@@ -66,6 +66,7 @@ $(document).ready(function() {
           const suggestion = $('<div class="suggestion"></div>');
           suggestion.text(capitalizeFirstLetter(cityName) + ', ' + capitalizeFirstLetter(countryName) + ' (' + iataCode + ')');
           suggestion.data('iataCode', iataCode);
+          suggestion.css('cursor', 'pointer'); // Add cursor pointer
 
           // Function to capitalize the first letter of each word
           function capitalizeFirstLetter(str) {
