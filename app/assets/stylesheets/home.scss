@@ -1,3 +1,7 @@
 #autocomplete-suggestions {
   display: none;
 }
+
+#autocomplete-suggestions .suggestion {
+  padding: 0.5rem; /* Add padding to create a gap */
+}
