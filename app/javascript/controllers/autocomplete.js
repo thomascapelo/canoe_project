@@ -35,7 +35,7 @@ $(document).ready(function() {
   // Function to fetch autocomplete suggestions based on user input
   function fetchAutocompleteSuggestions(input, inputField) {
     // Clear previous suggestions
-    autocompleteContainer.empty();
+    autocompleteContainer.empty().hide();
 
     // Make AJAX request to Amadeus API
     $.ajax({
@@ -76,7 +76,7 @@ $(document).ready(function() {
 
           // Attach click event listener to populate input field with selected suggestion
           suggestion.on('click', function() {
-            inputField.val(iataCode);
+            handleSuggestionSelection(inputField, iataCode);
           });
 
           // Append suggestion to the container if the limit is not exceeded
@@ -85,8 +85,21 @@ $(document).ready(function() {
             suggestionCount++;
           }
         });
+
+        // Show or hide the autocomplete suggestions container based on the number of suggestions
+        if (suggestionCount > 0) {
+          autocompleteContainer.show();
+        } else {
+          autocompleteContainer.hide();
+        }
       }
     });
+  }
+
+  // Function to handle selection of a suggestion
+  function handleSuggestionSelection(inputField, iataCode) {
+    inputField.val(iataCode);
+    autocompleteContainer.empty().hide(); // Clear and hide the autocomplete suggestions container
   }
 
   // Event listener for arrival city input field
@@ -104,7 +117,7 @@ $(document).ready(function() {
   // Event listener to close the suggestions container when clicking outside of it
   $(document).on('click', function(event) {
     if (!autocompleteContainer.is(event.target) && autocompleteContainer.has(event.target).length === 0) {
-      autocompleteContainer.empty();
+      autocompleteContainer.empty().hide();
     }
   });
 
