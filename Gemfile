@@ -5,7 +5,7 @@ ruby "3.1.2"
 #binding-pry
 gem 'pry-rails'
 
-# To set-up env and API keys
+# To set-up .env and save API keys
 gem 'dotenv-rails'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
