@@ -21,6 +21,13 @@ class FlightsController < ApplicationController
   
     logger.debug "Flights: #{@flights}"
     render 'search_results'
+
+     @results = perform_search(params)
+
+  respond_to do |format|
+    format.turbo_stream
+    format.html { render :search_results }
+    end
   end
   
 
