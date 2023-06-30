@@ -48,7 +48,7 @@ class FlightsController < ApplicationController
       return access_token
     else
       # Handle the error case
-      return nil
+      flash[:alert] = 'Failed to retrieve access token.'
     end
   end
 
@@ -89,6 +89,8 @@ class FlightsController < ApplicationController
       return []
     end
   end
+
+  
     # # # SEARCH AIRLINE NAME IN API # # #
   def search_airlines_name(airline_code, access_token)
     uri = URI("https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=#{airline_code}")
