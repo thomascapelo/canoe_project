@@ -5,8 +5,11 @@ class FlightsController < ApplicationController
   helper_method :search_airlines_name
   def search_results
     search_params # Call the method to set the instance variables
-  
-    access_token = get_access_token('E3QJBG9aB36ZF3tKCopetWORIvV7NYAC', 'Cu94OhFnMVAWGuJo')
+
+    client_id = ENV['CLIENT_ID']
+    client_secret = ENV['CLIENT_SECRET']
+
+    access_token = get_access_token(client_id, client_secret)
     if access_token.nil?
       flash[:alert] = 'Failed to retrieve access token.'
       redirect_to root_path and return
