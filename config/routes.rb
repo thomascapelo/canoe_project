@@ -19,9 +19,5 @@ Rails.application.routes.draw do
  
    # Users
    resources :users, only: [:new, :create]
- 
-   # Custom Routes
-  #  get '/search', to: 'flights#search', as: 'flight_search'
-  # get '/flights/search', to: 'flights#search_results', as: 'search_flights'
 
 end
