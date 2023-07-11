@@ -19,35 +19,36 @@
     <% flight['itineraries'].each do |itinerary| %>
       <div class="itinerary">
         <% segments = itinerary['segments'] %>
-        <% date_departure_calcul = Time.parse(segments.first['departure']['at']).strftime('%Y/%m/%d') %>
-        <% arrival_departure_calcul = Time.parse(segments.last['arrival']['at']).strftime('%Y/%m/%d') %>
-        <% operating_airline_codes = segments.map { |segment| segment["operating"]["carrierCode"] }.uniq %>
-        <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
-        <% flight_price = flight['price'] %>
-        <!-- Flight info -->
-        <div class="flight-info">
-          <p>
-            <%= Time.parse(segments.first['departure']['at']).strftime('%H:%M') %> -
-            <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
-            <%= Time.parse(segments.last['arrival']['at']).strftime('%H:%M') %>
-            <% if arrival_departure_calcul > date_departure_calcul %>
-              <span class="text-grey-500 text-sm">+1</span>
+        <% if segments %>
+          <% segments.each do |segment| %>
+            <% if segment['operating'] && segment['operating']['carrierCode'] %>
+              <% operating_airline_codes = segments.map { |segment| segment['operating']['carrierCode'] }.uniq %>
+              <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
+              <% flight_price = flight['price'] %>
+              <!-- Flight info -->
+              <div class="flight-info">
+                <p>
+                  <%= Time.parse(segment['departure']['at']).strftime('%H:%M') %> -
+                  <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
+                  <%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %>
+                </p>
+                <p>
+                  <%= segment['departure']['iataCode'] %> - <%= segment['arrival']['iataCode'] %>
+                </p>
+                <%# Check Airline Operating the flights %>
+                <% if operating_airlines.size == 1 %>
+                  <p class="text-sm mb-4">
+                    Flights operated by <%= operating_airlines.first %>
+                  </p>
+                <% else %>
+                  <p class="text-sm mb-4">
+                    Main operating airline is <%= operating_airlines.join(' ') %>
+                  </p>
+                <% end %>
+              </div>
             <% end %>
-          </p>
-          <p>
-            <%= segments.first['departure']['iataCode'] %> - <%= segments.last['arrival']['iataCode'] %>
-          </p>
-          <%# Check Airline Operating the flights %>
-          <% if operating_airlines.size == 1 %>
-            <p class="text-sm mb-4">
-              Flights operated by <%= operating_airlines.first %>
-            </p>
-          <% else %>
-            <p class="text-sm mb-4">
-              Main operating airline is <%= operating_airlines.join(' ') %>
-            </p>
           <% end %>
-        </div>
+        <% end %>
       </div>
     <% end %>
     <!-- Price display -->
