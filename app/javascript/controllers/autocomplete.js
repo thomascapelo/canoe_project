@@ -19,8 +19,8 @@ $(document).ready(function () {
       method: "POST",
       data: {
         grant_type: "client_credentials",
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: "E3QJBG9aB36ZF3tKCopetWORIvV7NYAC",
+        client_secret: "Cu94OhFnMVAWGuJo",
       },
       success: function (response) {
         accessToken = response.access_token; // Assign the value to accessToken
