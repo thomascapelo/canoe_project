@@ -16,6 +16,7 @@ class FlightsController < ApplicationController
     end
 
     @access_token = access_token
+
     @flights = search_flights(@departure_city, @arrival_city, @departure_date, @return_date, @adults, access_token)
   
     @flights.each do |flight|
@@ -55,43 +56,49 @@ class FlightsController < ApplicationController
     end
   end
 
-  def search_flights(origin, destination, departure_date, return_date, adults, access_token)
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date.strftime('%Y-%m-%d')}&returnDate=#{return_date.strftime('%Y-%m-%d')}&adults=#{adults}&max=6&currencyCode=EUR")
-    ###&currencyCode=EUR - Set the currency to EUR ###
-    ### max6 at the end of URI to limit the search to 6 flights ###
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-  
-    request = Net::HTTP::Get.new(uri)
-    request['Authorization'] = "Bearer #{access_token}"
-  
-    response = http.request(request)
-  
-    puts "Response Code: #{response.code}"
-    puts "Response Body: #{response.body}"
-  
-    if response.code.to_i == 200
-      flight_offers = JSON.parse(response.body)
-      flights = []
-  
-      flight_offers['data'].each do |flight_offer|
-        flight = Flight.new
-        flight.departure_city = origin
-        flight.arrival_city = destination
-        flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
-        flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
-        flight.flight_time = flight_offer['itineraries'].first['duration']
-        flight.price = flight_offer['price']['total'].to_f # Convert the 'total' value to float
-        flight.itineraries = flight_offer['itineraries'] # Add itineraries data to the flight object
-        flights << flight
-      end
-  
-      return flights
-    else
-      flash[:alert] = 'There was an error with your search. Please try again.'
-      return []
-    end
+def search_flights(origin, destination, departure_date, return_date, adults, access_token)
+  departure_date_str = departure_date.strftime('%Y-%m-%d')
+
+  if return_date.nil?
+    # One-way flight search
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=6&currencyCode=EUR")
+  else
+    return_date_str = return_date.strftime('%Y-%m-%d')
+    # Round-trip flight search
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=6&currencyCode=EUR")
   end
+
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = true
+
+  request = Net::HTTP::Get.new(uri)
+  request['Authorization'] = "Bearer #{access_token}"
+
+  response = http.request(request)
+
+  if response.code.to_i == 200
+    flight_offers = JSON.parse(response.body)
+    flights = []
+
+    flight_offers['data'].each do |flight_offer|
+      flight = Flight.new
+      flight.departure_city = origin
+      flight.arrival_city = destination
+      flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
+      flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
+      flight.flight_time = flight_offer['itineraries'].first['duration']
+      flight.price = flight_offer['price']['total'].to_f
+      flight.itineraries = flight_offer['itineraries']
+      flights << flight
+    end
+
+    return flights
+  else
+    flash[:alert] = 'There was an error with your search. Please try again.'
+    return []
+  end
+end
+
     # # # SEARCH AIRLINE NAME IN API # # #
   def search_airlines_name(airline_code, access_token)
     uri = URI("https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=#{airline_code}")
@@ -118,8 +125,8 @@ class FlightsController < ApplicationController
   def search_params
     @departure_city = params[:departure_city]
     @arrival_city = params[:arrival_city]
-    @departure_date = Date.parse(params[:departure_date]).beginning_of_day
-    @return_date = Date.parse(params[:return_date]).beginning_of_day
+    @departure_date = Date.strptime(params[:departure_date], '%Y-%m-%d').beginning_of_day
+    @return_date = Date.strptime(params[:return_date], '%Y-%m-%d').beginning_of_day if params[:return_date].present?
     @adults = params[:adults].to_i
   end
   
