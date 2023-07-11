@@ -1,4 +1,14 @@
-<div class="bg-white rounded-lg mt-4 py-4 box-border">
+  <select name="travel_class" class="w-44 mt-4 border-none border-gray-300 rounded-md focus:outline-none focus:ring font-light bg-inherit">
+  <option value="ECONOMY">Economy</option>
+  <option value="PREMIUM_ECONOMY">Premium Economy</option>
+  <option value="BUSINESS">Business</option>
+  <option value="FIRST">First Class</option>
+</select>
+<select name="trip_type" class="w-44 border-none border-gray-300 rounded-md focus:outline-none focus:ring font-light bg-inherit">
+  <option value="one_way">One Way</option>
+  <option value="round_trip">Round Trip</option>
+</select>
+<div class="bg-white rounded-lg py-4 box-border">
   <form class="flex items-center" action="<%= search_results_path %>" method="GET">
     <input type="text" id="departure_city" name="departure_city" placeholder="From ..." class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" />
     <input type="text" id="arrival_city" name="arrival_city" placeholder="To ..." class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" />
