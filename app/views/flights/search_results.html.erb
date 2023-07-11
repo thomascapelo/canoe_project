@@ -1,8 +1,7 @@
 <h1 class="text-3xl tracking-wide text-center">
   Canoë Flights
 </h1>
-                      <%# THIS IS THE RECAP REQUEST %>
-
+<%# THIS IS THE RECAP REQUEST %>
 <div class="p-4 m-2 rounded-lg bg-blue-950 text-white">
   <h2 class="text-xl font-semibold mb-4">Flight Results for</h2>
   <div class="flex">
@@ -11,7 +10,6 @@
     <h3 class="mx-8"><%= @adults %> adults</h3>
   </div>
 </div>
-
 <% @flights.each do |flight| %>
   <div class="flight-details bg-white rounded-lg mx-64 my-8 py-4 px-4">
     <% flight['itineraries'].each do |itinerary| %>
@@ -22,7 +20,6 @@
         <% operating_airline_codes = segments.map { |segment| segment["operating"]["carrierCode"] }.uniq %>
         <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
         <% flight_price = flight['price'] %>
-
         <!-- Flight info -->
         <div class="flight-info">
           <p>
@@ -36,7 +33,6 @@
           <p>
             <%= segments.first['departure']['iataCode'] %> - <%= segments.last['arrival']['iataCode'] %>
           </p>
-
           <%# Check Airline Operating the flights %>
           <% if operating_airlines.size == 1 %>
             <p class="text-sm mb-4">
@@ -44,16 +40,15 @@
             </p>
           <% else %>
             <p class="text-sm mb-4">
-              Main Operating Airline is <%= operating_airlines.join(' ') %>
+              Main operating airline is <%= operating_airlines.join(' ') %>
             </p>
           <% end %>
         </div>
       </div>
     <% end %>
-
     <!-- Price display -->
-        <p class="mt-4">
-          <strong><%= flight['price'] %>€</strong>
-        </p>
+    <p class="mt-4">
+      <strong><%= flight['price'] %>€</strong>
+    </p>
   </div>
 <% end %>
