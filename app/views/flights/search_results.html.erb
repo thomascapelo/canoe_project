@@ -1,7 +1,6 @@
 <h1 class="text-3xl tracking-wide text-center">
   Canoë Flights
 </h1>
-<%# THIS IS THE RECAP REQUEST %>
 <div class="p-4 m-2 rounded-lg bg-blue-950 text-white">
   <h2 class="text-xl font-semibold mb-4">Flight Results for</h2>
   <div class="flex">
@@ -12,6 +11,7 @@
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %></h3>
     <% end %>
     <h3 class="mx-8"><%= @adults %> adults</h3>
+    <h3 class="mx-8"><%= @travel_class %></h3>
   </div>
 </div>
 <% @flights.each do |flight| %>
@@ -20,11 +20,11 @@
       <div class="itinerary">
         <% segments = itinerary['segments'] %>
         <% if segments %>
+          <% operating_airline_codes = segments.map { |segment| segment['operating']&.dig('carrierCode') }.compact.uniq %>
+          <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
+          <% flight_price = flight['price'] %>
           <% segments.each do |segment| %>
             <% if segment['operating'] && segment['operating']['carrierCode'] %>
-              <% operating_airline_codes = segments.map { |segment| segment['operating']['carrierCode'] }.uniq %>
-              <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
-              <% flight_price = flight['price'] %>
               <!-- Flight info -->
               <div class="flight-info">
                 <p>
@@ -39,6 +39,10 @@
                 <% if operating_airlines.size == 1 %>
                   <p class="text-sm mb-4">
                     Flights operated by <%= operating_airlines.first %>
+                  </p>
+                <% elsif operating_airlines.size > 1 %>
+                  <p class="text-sm mb-4">
+                    Flights operated by several airlines
                   </p>
                 <% else %>
                   <p class="text-sm mb-4">

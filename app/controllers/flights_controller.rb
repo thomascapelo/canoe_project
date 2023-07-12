@@ -17,7 +17,7 @@ class FlightsController < ApplicationController
 
     @access_token = access_token
 
-    @flights = search_flights(@departure_city, @arrival_city, @departure_date, @return_date, @adults, access_token)
+    @flights = search_flights(@departure_city, @arrival_city, @departure_date, @return_date, @adults, @travel_class, access_token)
   
     @flights.each do |flight|
       flight.flight_time = calculate_flight_time(flight.departure_date, flight.arrival_date)
@@ -56,16 +56,16 @@ class FlightsController < ApplicationController
     end
   end
 
-def search_flights(origin, destination, departure_date, return_date, adults, access_token)
+def search_flights(origin, destination, departure_date, return_date, adults, travel_class, access_token)
   departure_date_str = departure_date.strftime('%Y-%m-%d')
 
   if return_date.nil?
     # One-way flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=6&currencyCode=EUR")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=6&currencyCode=EUR&travelClass=#{travel_class}")
   else
     return_date_str = return_date.strftime('%Y-%m-%d')
     # Round-trip flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=6&currencyCode=EUR")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=6&currencyCode=EUR&travelClass=#{travel_class}")
   end
 
   http = Net::HTTP.new(uri.host, uri.port)
@@ -128,6 +128,7 @@ end
     @departure_date = Date.strptime(params[:departure_date], '%Y-%m-%d').beginning_of_day
     @return_date = Date.strptime(params[:return_date], '%Y-%m-%d').beginning_of_day if params[:return_date].present?
     @adults = params[:adults].to_i
+    @travel_class = params[:travel_class]
   end
   
 end
