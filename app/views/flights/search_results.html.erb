@@ -11,7 +11,7 @@
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %></h3>
     <% end %>
     <h3 class="mx-8"><%= @adults %> adults</h3>
-    <h3 class="mx-8"><%= @travel_class %></h3>
+    <h3 class="mx-8"><%= @travel_class.capitalize %></h3>
   </div>
 </div>
 <% @flights.each do |flight| %>
