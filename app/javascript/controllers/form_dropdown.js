@@ -1,12 +1,16 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const tripTypeDropdown = document.getElementById("trip_type");
-  const returnDateInput = document.getElementById("return_date");
+import { Controller } from "stimulus";
 
-  tripTypeDropdown.addEventListener("change", function () {
+export default class extends Controller {
+  static targets = ["tripType", "returnDate"];
+
+  handleChange() {
+    const tripTypeDropdown = this.tripTypeTarget;
+    const returnDateInput = this.returnDateTarget;
+
     if (tripTypeDropdown.value === "one_way") {
       returnDateInput.style.display = "none";
     } else {
       returnDateInput.style.display = "block";
     }
-  });
-});
+  }
+}

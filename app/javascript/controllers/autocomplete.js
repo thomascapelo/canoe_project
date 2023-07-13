@@ -1,136 +1,111 @@
-$(document).ready(function () {
-  // Constants for Amadeus API endpoint and parameters
-  const apiUrl = "https://test.api.amadeus.com/v1/reference-data/locations";
-  const subType = "CITY";
-  const pageLimit = 10;
-  const pageOffset = 0;
-  const sort = "analytics.travelers.score";
-  const view = "FULL";
+import { Controller } from "stimulus";
+import { fetch } from "@rails/ujs";
+import { Turbo } from "@hotwired/turbo-rails";
 
-  // Autocomplete suggestions container
-  const autocompleteContainer = $("#autocomplete-suggestions");
+export default class extends Controller {
+  static targets = ["inputField", "autocompleteContainer"];
 
-  let accessToken; // Declare the accessToken variable
+  initialize() {
+    this.accessToken = null;
+  }
 
-  // Function to fetch the access token
-  function fetchAccessToken() {
-    $.ajax({
-      url: "https://test.api.amadeus.com/v1/security/oauth2/token",
+  connect() {
+    this.fetchAccessToken();
+  }
+
+  fetchAccessToken() {
+    fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
       method: "POST",
-      data: {
+      body: JSON.stringify({
         grant_type: "client_credentials",
         client_id: "E3QJBG9aB36ZF3tKCopetWORIvV7NYAC",
         client_secret: "Cu94OhFnMVAWGuJo",
+      }),
+      headers: {
+        "Content-Type": "application/json",
       },
-      success: function (response) {
-        accessToken = response.access_token; // Assign the value to accessToken
-        // Use the accessToken in your API requests
-      },
-      error: function (xhr, textStatus, errorThrown) {
-        console.error("Failed to retrieve access token:", errorThrown);
-      },
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.accessToken = data.access_token;
+      })
+      .catch((error) => {
+        console.error("Failed to retrieve access token:", error);
+      });
   }
 
-  // Function to fetch autocomplete suggestions based on user input
-  function fetchAutocompleteSuggestions(input, inputField) {
-    // Clear previous suggestions
-    autocompleteContainer.empty().hide();
+  fetchAutocompleteSuggestions(event) {
+    const input = event.target.value;
+    const inputField = this.inputFieldTarget;
+    const autocompleteContainer = this.autocompleteContainerTarget;
 
-    // Make AJAX request to Amadeus API
-    $.ajax({
-      url: apiUrl,
-      data: {
-        keyword: input,
-        subType: subType,
-        "page[limit]": pageLimit,
-        "page[offset]": pageOffset,
-        sort: sort,
-        view: view,
-      },
-      headers: {
-        Authorization: "Bearer " + accessToken,
-      },
-      success: function (response) {
-        // Process API response and display suggestions
-        const maxSuggestions = 5; // Limit the number of suggestions to 5
-        let suggestionCount = 0; // Counter for the number of suggestions
+    autocompleteContainer.innerHTML = ""; // Clear previous suggestions
+    autocompleteContainer.style.display = "none";
 
-        response.data.forEach(function (location) {
-          const cityName = location.address.cityName;
-          const countryName = location.address.countryName;
-          const iataCode = location.iataCode;
+    if (input.length > 0) {
+      fetch(
+        `https://test.api.amadeus.com/v1/reference-data/locations?keyword=${input}&subType=CITY&page[limit]=10&page[offset]=0&sort=analytics.travelers.score&view=FULL`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.accessToken}`,
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          const maxSuggestions = 5; // Limit the number of suggestions to 5
+          let suggestionCount = 0; // Counter for the number of suggestions
 
-          // Create suggestion element
-          const suggestion = $('<div class="suggestion"></div>');
-          suggestion.text(
-            capitalizeFirstLetter(cityName) +
-              ", " +
-              capitalizeFirstLetter(countryName) +
-              " (" +
-              iataCode +
-              ")"
-          );
-          suggestion.data("iataCode", iataCode);
-          suggestion.css("cursor", "pointer"); // Add cursor pointer
+          data.data.forEach((location) => {
+            const cityName = location.address.cityName;
+            const countryName = location.address.countryName;
+            const iataCode = location.iataCode;
 
-          // Function to capitalize the first letter of each word
-          function capitalizeFirstLetter(str) {
-            return str.toLowerCase().replace(/(^|\s)\w/g, function (match) {
-              return match.toUpperCase();
+            const suggestion = document.createElement("div");
+            suggestion.classList.add("suggestion");
+            suggestion.textContent = `${this.capitalizeFirstLetter(
+              cityName
+            )}, ${this.capitalizeFirstLetter(countryName)} (${iataCode})`;
+            suggestion.dataset.iataCode = iataCode;
+            suggestion.style.cursor = "pointer";
+
+            suggestion.addEventListener("click", () => {
+              this.handleSuggestionSelection(inputField, iataCode);
             });
-          }
 
-          // Attach click event listener to populate input field with selected suggestion
-          suggestion.on("click", function () {
-            handleSuggestionSelection(inputField, iataCode);
+            if (suggestionCount < maxSuggestions) {
+              autocompleteContainer.appendChild(suggestion);
+              suggestionCount++;
+            }
           });
 
-          // Append suggestion to the container if the limit is not exceeded
-          if (suggestionCount < maxSuggestions) {
-            autocompleteContainer.append(suggestion);
-            suggestionCount++;
+          if (suggestionCount > 0) {
+            autocompleteContainer.style.display = "block";
           }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch autocomplete suggestions:", error);
         });
-
-        // Show or hide the autocomplete suggestions container based on the number of suggestions
-        if (suggestionCount > 0) {
-          autocompleteContainer.show();
-        } else {
-          autocompleteContainer.hide();
-        }
-      },
-    });
-  }
-
-  // Function to handle selection of a suggestion
-  function handleSuggestionSelection(inputField, iataCode) {
-    inputField.val(iataCode);
-    autocompleteContainer.empty().hide(); // Clear and hide the autocomplete suggestions container
-  }
-
-  // Event listener for arrival city input field
-  $("#arrival_city").on("input", function () {
-    const input = $(this).val();
-    fetchAutocompleteSuggestions(input, $(this));
-  });
-
-  // Event listener for departure city input field
-  $("#departure_city").on("input", function () {
-    const input = $(this).val();
-    fetchAutocompleteSuggestions(input, $(this));
-  });
-
-  // Event listener to close the suggestions container when clicking outside of it
-  $(document).on("click", function (event) {
-    if (
-      !autocompleteContainer.is(event.target) &&
-      autocompleteContainer.has(event.target).length === 0
-    ) {
-      autocompleteContainer.empty().hide();
     }
-  });
+  }
 
-  // Fetch the access token when the document is ready
-  fetchAccessToken();
-});
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  handleSuggestionSelection(inputField, iataCode) {
+    inputField.value = iataCode;
+    this.autocompleteContainerTarget.innerHTML = "";
+    this.autocompleteContainerTarget.style.display = "none";
+  }
+
+  handleClickOutside(event) {
+    if (
+      !this.autocompleteContainerTarget.contains(event.target) &&
+      !this.inputFieldTarget.contains(event.target)
+    ) {
+      this.autocompleteContainerTarget.innerHTML = "";
+      this.autocompleteContainerTarget.style.display = "none";
+    }
+  }
+}
