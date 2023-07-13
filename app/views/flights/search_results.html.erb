@@ -14,6 +14,46 @@
     <h3 class="mx-8"><%= @travel_class.capitalize %></h3>
   </div>
 </div>
+<div class="flex flex mx-64 my-8 py-2 px-4 place-content-around">
+  <!-- Filter: Cheapest flight and duration -->
+  <div class="filter-container">
+    <h3>Cheapest Flight</h3>
+    <% cheapest_flight = @flights.min_by { |flight| flight['price'].to_f } %>
+    <% if cheapest_flight %>
+      <% cheapest_itinerary = cheapest_flight['itineraries'].min_by { |itinerary| itinerary['duration'] } %>
+      <% if cheapest_itinerary %>
+        <p>Duration: <%= cheapest_itinerary['duration'] %></p>
+        <p>Price: <%= cheapest_flight['price'] %>€</p>
+      <% else %>
+        <p>No itinerary found.</p>
+      <% end %>
+    <% else %>
+      <p>No flight found.</p>
+    <% end %>
+  </div>
+  <!-- Filter: Shortest duration and price -->
+  <div class="filter-container">
+    <h3>Shortest Duration</h3>
+    <% shortest_duration_flight = @flights.min_by { |flight| flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } } %>
+    <% if shortest_duration_flight %>
+      <p>Duration: <%= shortest_duration_flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } %> minutes</p>
+      <p>Price: <%= shortest_duration_flight['price'] %>€</p>
+    <% else %>
+      <p>No flight found.</p>
+    <% end %>
+  </div>
+  <!-- Filter: Best Choice - Combination of price and shortest duration -->
+  <div class="filter-container">
+    <h3>Best Choice</h3>
+    <% best_choice_flight = @flights.min_by { |flight| flight['price'].to_f / flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } } %>
+    <% if best_choice_flight %>
+      <p>Duration: <%= best_choice_flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } %> minutes</p>
+      <p>Price: <%= best_choice_flight['price'] %>€</p>
+    <% else %>
+      <p>No flight found.</p>
+    <% end %>
+  </div>
+</div>
 <% @flights.each do |flight| %>
   <div class="flight-details bg-white rounded-lg mx-64 my-8 py-4 px-4">
     <% flight['itineraries'].each do |itinerary| %>
