@@ -61,11 +61,11 @@ def search_flights(origin, destination, departure_date, return_date, adults, tra
 
   if return_date.nil?
     # One-way flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=6&currencyCode=EUR&travelClass=#{travel_class}")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=20&currencyCode=EUR&travelClass=#{travel_class}")
   else
     return_date_str = return_date.strftime('%Y-%m-%d')
     # Round-trip flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=6&currencyCode=EUR&travelClass=#{travel_class}")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=20&currencyCode=EUR&travelClass=#{travel_class}")
   end
 
   http = Net::HTTP.new(uri.host, uri.port)
