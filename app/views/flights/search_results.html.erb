@@ -21,13 +21,16 @@
     <div class="flex font-light text-sm">
       <% cheapest_flight = @flights.min_by { |flight| flight['price'].to_f } %>
       <% if cheapest_flight %>
-        <% cheapest_itinerary = cheapest_flight['itineraries'].min_by { |itinerary| itinerary['duration'] } %>
+        <% cheapest_itinerary = cheapest_flight['itineraries'].first %>
         <% if cheapest_itinerary %>
           <!-- Duration -->
-          <p><%= cheapest_itinerary['duration'] %></p>
+          <% duration = cheapest_itinerary['duration'] %>
+          <% hours = duration.scan(/\d+/)[0].to_i %>
+          <% minutes = duration.scan(/\d+/)[1].to_i %>
+          <p><%= "#{hours}h#{minutes}" %></p>
           <p> - </p>
           <!-- Price -->
-          <p><%= cheapest_flight['price'] %>€</p>
+          <p><%= cheapest_flight['price']%>€</p>
         <% else %>
           <p>No itinerary found.</p>
         <% end %>
