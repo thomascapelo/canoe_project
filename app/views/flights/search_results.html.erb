@@ -14,9 +14,9 @@
     <h3 class="mx-8"><%= @travel_class.capitalize %></h3>
   </div>
 </div>
-<div class="flex mx-64 my-8 mx-2 py-2 px-4 place-content-around">
+<div class="flex mx-64 my-8 mx-2 p-4 rounded-lg bg-white shadow-md place-content-around">
   <!-- Filter: Cheapest flight and duration -->
-  <div class="filter-container">
+  <div class="filter-container border-r-4 pr-2">
     <h3>Cheapest Flight</h3>
     <div class="flex font-light text-sm">
       <% cheapest_flight = @flights.min_by { |flight| flight['price'].to_f } %>
@@ -37,7 +37,7 @@
     </div>
   </div>
   <!-- Filter: Shortest duration and price -->
-  <div class="filter-container">
+  <div class="filter-container border-r-4 pr-2">
     <h3>Shortest Duration</h3>
     <div class="flex font-light text-sm">
       <% shortest_duration_flight = @flights.min_by { |flight| flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } } %>
