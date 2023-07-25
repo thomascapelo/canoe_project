@@ -17,7 +17,7 @@
 <div class="flex mx-64 my-8 mx-2 p-4 rounded-lg bg-white shadow-md place-content-around">
   <!-- Filter: Cheapest flight and duration -->
   <div class="filter-container border-r-4 pr-2">
-    <h3>Cheapest Flight</h3>
+    <h3>The cheapest</h3>
     <div class="flex font-light text-sm">
       <% cheapest_flight = @flights.min_by { |flight| flight['price'].to_f } %>
       <% if cheapest_flight %>
@@ -43,13 +43,13 @@
   <div class="filter-container border-r-4 pr-2">
     <h3>Shortest Duration</h3>
     <div class="flex font-light text-sm">
-      <% shortest_duration_flight = @flights.min_by { |flight| flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } } %>
+      <% shortest_duration_flight = @flights.min_by { |flight| flight['itineraries'].min_by { |itinerary| itinerary['duration'] }['duration'] } %>
       <% if shortest_duration_flight %>
         <!-- Duration -->
-        <p><%= shortest_duration_flight['itineraries'].sum { |itinerary| itinerary['duration'].to_i } %> minutes</p>
+        <p><%= shortest_duration_flight['itineraries'].min_by { |itinerary| itinerary['duration'] }['duration'].gsub(/PT(\d+)H(\d+)M/, '\1h\2m') %></p>
         <p> - </p>
         <!-- Price -->
-        <p><%= shortest_duration_flight['price'] %>€</p>
+        <p><%= shortest_duration_flight['price']%>€</p>
       <% else %>
         <p>No flight found.</p>
       <% end %>
