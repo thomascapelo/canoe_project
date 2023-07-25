@@ -5,17 +5,32 @@
     <option value="BUSINESS">Business</option>
     <option value="FIRST">First Class</option>
   </select>
-  <select id="trip_type" name="trip_type" class="w-44 border-none border-gray-300 rounded-md focus:outline-none focus:ring font-light bg-inherit">
+  <select id="trip_type" name="trip_type" class="w-44 border-none border-gray-300 rounded-md focus:outline-none focus:ring font-light bg-inherit" data-action="change->form-dropdown#toggleReturnDate">
     <option value="round_trip">Round Trip</option>
     <option value="one_way">One Way</option>
   </select>
   <div class="bg-white rounded-lg py-4 box-border flex items-center">
-    <input type="text" id="departure_city" name="departure_city" placeholder="From ..." class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" data-controller="autocomplete" />
-    <input type="text" id="arrival_city" name="arrival_city" placeholder="To ..." class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" data-controller="autocomplete" />
+    <input type="text" id="departure_city" name="departure_city" placeholder="From ..."
+    class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400"
+    data-controller="autocomplete" data-action="input->autocomplete#onInput"
+    data-autocomplete-api-url="https://test.api.amadeus.com/v1/reference-data/locations"
+    data-autocomplete-sub-type="CITY" data-autocomplete-page-limit="10"
+    data-autocomplete-sort="analytics.travelers.score" data-autocomplete-view="FULL"
+    data-autocomplete-target="input suggestions" />
+    <input type="text" id="arrival_city" name="arrival_city" placeholder="To ..."
+    class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400"
+    data-controller="autocomplete" data-action="input->autocomplete#onInput"
+    data-autocomplete-api-url="https://test.api.amadeus.com/v1/reference-data/locations"
+    data-autocomplete-sub-type="CITY" data-autocomplete-page-limit="10"
+    data-autocomplete-sort="analytics.travelers.score" data-autocomplete-view="FULL"
+    data-autocomplete-target="input suggestions" />
     <input type="date" name="departure_date" placeholder="Departure Date" class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" />
     <input type="date" id= "return_date" name="return_date" placeholder="Return Date" class="w-64 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" data-target="form-dropdown.returnDateInput" />
     <input type="number" name="adults" placeholder="Adults" class="w-28 mx-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-400" />
     <button type="submit" class="w-44 mx-2 h-8 bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-400">Search</button>
   </form>
 </div>
-<div id="autocomplete-suggestions" class="absolute flex-none border border-gray-300 rounded-md shadow-2xl mx-0 p-2 bg-white font-semibold z-10"></div>
+<div id="autocomplete-suggestions"
+  class="absolute flex-none border border-gray-300 rounded-md shadow-2xl mx-0 p-2 bg-white font-semibold z-10"
+  data-autocomplete-target="suggestions">
+</div>
