@@ -29,6 +29,7 @@
               <!-- Flight info -->
               <div class="flight-info">
                 <p>
+
                   <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> 🛫 -
                   <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
                   <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
@@ -38,6 +39,7 @@
                 </p>
                 <%# Check Airline Operating the flights %>
                 <% if operating_airlines.size == 1 %>
+
                   <p class="text-sm">
                     Flights operated by <%= operating_airlines.first %>
                   </p>
@@ -54,6 +56,7 @@
                 <% if segment['checkedBags'] %>
                   <p class="text-sm mb-4">
                     Checked luggage: <%= segment['checkedBags'] %> 🧳
+
                   </p>
                 <% end %>
               </div>

@@ -63,6 +63,7 @@ def search_flights(origin, destination, departure_date, return_date, adults, tra
 
   if return_date.nil?
     # One-way flight search
+
     uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=#{max_results}&currencyCode=EUR&travelClass=#{travel_class}")
   else
     return_date_str = return_date.strftime('%Y-%m-%d')
