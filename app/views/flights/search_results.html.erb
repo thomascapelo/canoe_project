@@ -38,24 +38,24 @@
                 </p>
                 <%# Check Airline Operating the flights %>
                 <% if operating_airlines.size == 1 %>
-                  <p class="text-sm mb-4">
+                  <p class="text-sm">
                     Flights operated by <%= operating_airlines.first %>
                   </p>
                 <% elsif operating_airlines.size > 1 %>
-                  <p class="text-sm mb-4">
+                  <p class="text-sm">
                     Flights operated by several airlines
                   </p>
                 <% else %>
-                  <p class="text-sm mb-4">
+                  <p class="text-sm">
                     Main operating airline is <%= operating_airlines.join(' ') %>
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>
                 <% if segment['checkedBags'] %>
-                  <p>
-                    Checked Bags: <%= segment['checkedBags'] %>
+                  <p class="text-sm mb-4">
+                    Checked luggage: <%= segment['checkedBags'] %> 🧳
                   </p>
-                <% end %> <!-- Add the missing 'end' tag here -->
+                <% end %>
               </div>
             <% end %>
           <% end %>
