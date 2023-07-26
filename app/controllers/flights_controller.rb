@@ -81,19 +81,40 @@ def search_flights(origin, destination, departure_date, return_date, adults, tra
   if response.code.to_i == 200
     flight_offers = JSON.parse(response.body)
     flights = []
+  flight_offers['data'].each do |flight_offer|
+    flight = Flight.new
+    flight.departure_city = origin
+    flight.arrival_city = destination
+    flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
+    flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
+    flight.flight_time = flight_offer['itineraries'].first['duration']
+    flight.price = flight_offer['price']['total'].to_f
+    flight.itineraries = flight_offer['itineraries']
 
-    flight_offers['data'].each do |flight_offer|
-      flight = Flight.new
-      flight.departure_city = origin
-      flight.arrival_city = destination
-      flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
-      flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
-      flight.flight_time = flight_offer['itineraries'].first['duration']
-      flight.price = flight_offer['price']['total'].to_f
-      flight.itineraries = flight_offer['itineraries']
-      flight.bags = flight_offer['travelerPricings'].first['fareDetailsBySegment'].first['includedCheckedBags']['quantity']
-      flights << flight
+    # Get the allowed checked bags quantity for each segment
+    allowed_checked_bags = {}
+    flight_offer['travelerPricings'].each do |traveler_pricing|
+      fare_details = traveler_pricing['fareDetailsBySegment']
+      next if fare_details.nil?
+
+      fare_details.each do |fare_detail|
+        segment_id = fare_detail['segmentId']
+        allowed_checked_bags[segment_id] = fare_detail['includedCheckedBags']['quantity']
+      end
     end
+
+    # Set the checked bags quantity for each segment
+    flight.itineraries.each do |itinerary|
+      segments = itinerary['segments']
+      segments.each do |segment|
+        segment_id = segment['id']
+        checked_bags = allowed_checked_bags[segment_id] || 0 # Use 0 if the segment ID is not found in allowed_checked_bags
+        segment['checkedBags'] = checked_bags
+      end
+    end
+
+    flights << flight
+  end
 
     return flights
   else
