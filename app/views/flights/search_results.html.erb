@@ -4,6 +4,7 @@
 <div class="p-4 m-2 rounded-lg bg-blue-950 text-white">
   <h2 class="text-xl font-semibold mb-4">Flight Results for</h2>
   <div class="flex">
+    <h3 class="mr-8" ><%= @trip_type_value %></h3>
     <h3><%= @departure_city %> - <%= @arrival_city %></h3>
     <% if @return_date %>
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %> - <%= @return_date.strftime('%a, %B %d') %></h3>
@@ -11,7 +12,7 @@
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %></h3>
     <% end %>
     <h3 class="mx-8"><%= @adults %> adults</h3>
-    <h3 class="mx-8"><%= @travel_class %></h3>
+    <h3 class="mx-8"><%= @travel_class.capitalize %></h3>
   </div>
 </div>
 <% @flights.each do |flight| %>
@@ -28,9 +29,9 @@
               <!-- Flight info -->
               <div class="flight-info">
                 <p>
-                  <%= Time.parse(segment['departure']['at']).strftime('%H:%M') %> -
+                  <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> 🛫 -
                   <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
-                  <%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %>
+                  <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
                 </p>
                 <p>
                   <%= segment['departure']['iataCode'] %> - <%= segment['arrival']['iataCode'] %>

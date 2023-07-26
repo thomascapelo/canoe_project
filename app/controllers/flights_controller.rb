@@ -129,6 +129,14 @@ end
     @return_date = Date.strptime(params[:return_date], '%Y-%m-%d').beginning_of_day if params[:return_date].present?
     @adults = params[:adults].to_i
     @travel_class = params[:travel_class]
+    @trip_type = params[:trip_type]
+    @trip_type_value = case @trip_type
+                     when 'round_trip'
+                       'Round Trip'
+                     when 'one_way'
+                       'One Way'
+                     else
+                       'Unknown Trip Type'
+                     end
   end
-  
 end
