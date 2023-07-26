@@ -50,6 +50,16 @@
                     Main operating airline is <%= operating_airlines.join(' ') %>
                   </p>
                 <% end %>
+                <%# Display the quantity of checked bags included for this segment %>
+                <% if segment['includedCheckedBags'] %>
+                  <p>
+                    Checked Bags Included: <%= segment['includedCheckedBags']['quantity'] %>
+                  </p>
+                <% else %>
+                  <p>
+                    Checked Bags Included: N/A
+                  </p>
+                <% end %>
               </div>
             <% end %>
           <% end %>
