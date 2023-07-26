@@ -51,10 +51,12 @@
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>
-                <% if flight.baggage > 0 %>
-                  <p>Number of bags included: <%= flight.baggage %></p>
-                <% else %>
-                  <p>No baggage included</p>
+                <% flight.baggage.each do |baggage_quantity| %>
+                  <% if baggage_quantity > 0 %>
+                    <p>Number of bags included: <%= baggage_quantity %></p>
+                  <% else %>
+                    <p>No baggage included</p>
+                  <% end %>
                 <% end %>
               </div>
             <% end %>
