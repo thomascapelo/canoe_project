@@ -51,16 +51,11 @@
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>
-                <% if segment['includedCheckedBags'] %>
-                  <p>
-                    Checked Bags Included: <%= segment['includedCheckedBags']['quantity'] %>
-                  </p>
+                <% if flight.baggage > 0 %>
+                  <p>Number of bags included: <%= flight.baggage %></p>
                 <% else %>
-                  <p>
-                    Checked Bags Included: N/A
-                  </p>
+                  <p>No baggage included</p>
                 <% end %>
-                <% raise %>
               </div>
             <% end %>
           <% end %>

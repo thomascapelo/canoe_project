@@ -1,5 +1,5 @@
 class AddBaggageToFlights < ActiveRecord::Migration[7.0]
   def change
-    add_column :flights, :includes_baggage, :boolean
+    add_column :flights, :baggage, :integer
   end
 end

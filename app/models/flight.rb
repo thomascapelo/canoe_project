@@ -11,6 +11,10 @@ class Flight < ApplicationRecord
   def formatted_arrival_time
     arrival_date.strftime('%I:%M %p')
   end
+
+  def includes_baggage?
+    includes_baggage > 0
+  end
   
   serialize :itineraries, JSON
 end

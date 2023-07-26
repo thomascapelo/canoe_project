@@ -91,7 +91,7 @@ def search_flights(origin, destination, departure_date, return_date, adults, tra
       flight.flight_time = flight_offer['itineraries'].first['duration']
       flight.price = flight_offer['price']['total'].to_f
       flight.itineraries = flight_offer['itineraries']
-      flight.baggage = flight_offer['travelerPricings'].first['fareDetailsBySegment'].first['includedCheckedBags']['quantity'] > 0
+      flight.baggage = flight_offer['travelerPricings'].first['fareDetailsBySegment'].first['includedCheckedBags']['quantity']
       flights << flight
     end
 
