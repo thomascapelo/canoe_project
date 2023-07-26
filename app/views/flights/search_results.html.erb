@@ -4,13 +4,14 @@
 <div class="p-4 m-2 rounded-lg bg-blue-950 text-white">
   <h2 class="text-xl font-semibold mb-4">Flight Results for</h2>
   <div class="flex">
-    <h3><%= @departure_city %> - <%= @arrival_city %></h3>
+    <h3 class="mr-8" ><%= @trip_type_value %></h3>
+    <h3><%= @departure_city %> → <%= @arrival_city %></h3>
     <% if @return_date %>
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %> - <%= @return_date.strftime('%a, %B %d') %></h3>
     <% else %>
       <h3 class="mx-8"><%= @departure_date.strftime('%a, %B %d') %></h3>
     <% end %>
-    <h3 class="mx-8"><%= @adults %> adults</h3>
+    <h3 class="mx-8"><%= @adults == 1 ? "#{@adults} adult" : "#{@adults} adults" %></h3>
     <h3 class="mx-8"><%= @travel_class.capitalize %></h3>
   </div>
 </div>
@@ -28,7 +29,8 @@
               <!-- Flight info -->
               <div class="flight-info">
                 <p>
-                  <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %> -</strong>
+
+                  <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> 🛫 -
                   <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
                   <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
                 </p>
@@ -37,31 +39,24 @@
                 </p>
                 <%# Check Airline Operating the flights %>
                 <% if operating_airlines.size == 1 %>
-                  <p class="text-sm mb-4">
-                    Flights operated by <strong><%= operating_airlines.first %></strong>
+
+                  <p class="text-sm">
+                    Flights operated by <%= operating_airlines.first %>
                   </p>
                 <% elsif operating_airlines.size > 1 %>
-                  <p class="text-sm mb-4">
+                  <p class="text-sm">
                     Flights operated by several airlines
                   </p>
                 <% else %>
-                  <p class="text-sm mb-4">
+                  <p class="text-sm">
                     Main operating airline is <%= operating_airlines.join(' ') %>
                   </p>
                 <% end %>
-                <%# Check if baggage is included %>
-                <% fare_details = flight['travelerPricings']&.[](0)&['fareDetailsBySegment']&.find { |fare| fare && fare['segmentId'] == segment['id'] } %>
-                <% if fare_details && fare_details['includedCheckedBags'] %>
+                <%# Display the quantity of checked bags included for this segment %>
+                <% if segment['checkedBags'] %>
                   <p class="text-sm mb-4">
-                    Baggage included: <%= fare_details['includedCheckedBags']['quantity'] %> checked bags
-                  </p>
-                <% elsif flight['pricingOptions'] && flight['pricingOptions']['includedCheckedBagsOnly'] == true %>
-                  <p class="text-sm mb-4">
-                    🧳 included
-                  </p>
-                <% else %>
-                  <p class="text-sm mb-4">
-                    🧳 information not available
+                    Checked luggage: <%= segment['checkedBags'] %> 🧳
+
                   </p>
                 <% end %>
               </div>

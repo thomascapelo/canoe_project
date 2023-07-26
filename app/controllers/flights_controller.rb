@@ -59,13 +59,16 @@ class FlightsController < ApplicationController
 def search_flights(origin, destination, departure_date, return_date, adults, travel_class, access_token)
   departure_date_str = departure_date.strftime('%Y-%m-%d')
 
+  max_results = 20
+
   if return_date.nil?
     # One-way flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=20&currencyCode=EUR&travelClass=#{travel_class}")
+
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&adults=#{adults}&max=#{max_results}&currencyCode=EUR&travelClass=#{travel_class}")
   else
     return_date_str = return_date.strftime('%Y-%m-%d')
     # Round-trip flight search
-    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=20&currencyCode=EUR&travelClass=#{travel_class}")
+    uri = URI("https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=#{origin}&destinationLocationCode=#{destination}&departureDate=#{departure_date_str}&returnDate=#{return_date_str}&adults=#{adults}&max=#{max_results}&currencyCode=EUR&travelClass=#{travel_class}")
   end
 
   http = Net::HTTP.new(uri.host, uri.port)
@@ -79,18 +82,40 @@ def search_flights(origin, destination, departure_date, return_date, adults, tra
   if response.code.to_i == 200
     flight_offers = JSON.parse(response.body)
     flights = []
+  flight_offers['data'].each do |flight_offer|
+    flight = Flight.new
+    flight.departure_city = origin
+    flight.arrival_city = destination
+    flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
+    flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
+    flight.flight_time = flight_offer['itineraries'].first['duration']
+    flight.price = flight_offer['price']['total'].to_f
+    flight.itineraries = flight_offer['itineraries']
 
-    flight_offers['data'].each do |flight_offer|
-      flight = Flight.new
-      flight.departure_city = origin
-      flight.arrival_city = destination
-      flight.departure_date = Time.parse(flight_offer['itineraries'].first['segments'].first['departure']['at'])
-      flight.arrival_date = Time.parse(flight_offer['itineraries'].first['segments'].last['arrival']['at'])
-      flight.flight_time = flight_offer['itineraries'].first['duration']
-      flight.price = flight_offer['price']['total'].to_f
-      flight.itineraries = flight_offer['itineraries']
-      flights << flight
+    # Get the allowed checked bags quantity for each segment
+    allowed_checked_bags = {}
+    flight_offer['travelerPricings'].each do |traveler_pricing|
+      fare_details = traveler_pricing['fareDetailsBySegment']
+      next if fare_details.nil?
+
+      fare_details.each do |fare_detail|
+        segment_id = fare_detail['segmentId']
+        allowed_checked_bags[segment_id] = fare_detail['includedCheckedBags']['quantity']
+      end
     end
+
+    # Set the checked bags quantity for each segment
+    flight.itineraries.each do |itinerary|
+      segments = itinerary['segments']
+      segments.each do |segment|
+        segment_id = segment['id']
+        checked_bags = allowed_checked_bags[segment_id] || 0 # Use 0 if the segment ID is not found in allowed_checked_bags
+        segment['checkedBags'] = checked_bags
+      end
+    end
+
+    flights << flight
+  end
 
     return flights
   else
@@ -129,6 +154,14 @@ end
     @return_date = Date.strptime(params[:return_date], '%Y-%m-%d').beginning_of_day if params[:return_date].present?
     @adults = params[:adults].to_i
     @travel_class = params[:travel_class]
+    @trip_type = params[:trip_type]
+    @trip_type_value = case @trip_type
+                     when 'round_trip'
+                       'Round Trip'
+                     when 'one_way'
+                       'One Way'
+                     else
+                       'Unknown Trip Type'
+                     end
   end
-  
 end
