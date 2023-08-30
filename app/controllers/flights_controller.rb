@@ -140,6 +140,22 @@ end
       return airline_name
     end
   end
+
+  # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
+  def search_arilines_logo(airline_name)
+    uri = URI("https://autocomplete.clearbit.com/v1/companies/suggest?query=:#{airline_name}")
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(uri)
+    response = http.request(request)
+
+    if response.code == '200'
+      company_data = JSON.parse(response.body).first
+      logo_url = company_data['logo']
+    return logo_url
+    end
+  end
   
   
   def calculate_flight_time(departure_date, arrival_date)
