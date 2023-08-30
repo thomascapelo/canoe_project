@@ -6,5 +6,8 @@
     "axios": "^1.4.0",
     "stimulus": "^3.2.1",
     "stimulus-autocomplete": "^3.1.0"
+  },
+  "devDependencies": {
+    "dotenv-webpack": "^8.0.1"
   }
 }
