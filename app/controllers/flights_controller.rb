@@ -2,7 +2,7 @@ require 'net/http'
 require 'json'
 
 class FlightsController < ApplicationController  
-  helper_method :search_airlines_name
+  helper_method :search_airlines_name, :search_arilines_logo
   def search_results
     search_params # Call the method to set the instance variables
 
@@ -137,24 +137,15 @@ end
 
     if response.code == '200'
       airline_name = JSON.parse(response.body)['data'].first['businessName'].capitalize
+          # Display the airline_name value in the console
       return airline_name
     end
   end
 
   # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
-  def search_arilines_logo(airline_name)
-    uri = URI("https://autocomplete.clearbit.com/v1/companies/suggest?query=:#{airline_name}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-
-    request = Net::HTTP::Get.new(uri)
-    response = http.request(request)
-
-    if response.code == '200'
-      company_data = JSON.parse(response.body).first
-      logo_url = company_data['logo']
+  def search_arilines_logo(iata_airline_code)
+    logo_url = "https://content.airhex.com/content/logos/airlines_#{iata_airline_code}_125_50_r.png?proportions=keep"
     return logo_url
-    end
   end
   
   

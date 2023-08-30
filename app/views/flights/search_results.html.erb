@@ -29,7 +29,6 @@
               <!-- Flight info -->
               <div class="flight-info">
                 <p>
-
                   <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> 🛫 -
                   <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
                   <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
@@ -38,25 +37,17 @@
                   <%= segment['departure']['iataCode'] %> - <%= segment['arrival']['iataCode'] %>
                 </p>
                 <%# Check Airline Operating the flights %>
-                <% if operating_airlines.size == 1 %>
-
+                <% operating_airline_codes.each do |airline_code| %>
+                  <% airline_company_logo = search_arilines_logo(airline_code) %>
                   <p class="text-sm">
-                    Flights operated by <%= operating_airlines.first %>
-                  </p>
-                <% elsif operating_airlines.size > 1 %>
-                  <p class="text-sm">
-                    Flights operated by several airlines
-                  </p>
-                <% else %>
-                  <p class="text-sm">
-                    Main operating airline is <%= operating_airlines.join(' ') %>
+                    <img src="<%= airline_company_logo %>" alt="<%= airline_code %> Logo" class="">
+                    Flights operated by <%= search_airlines_name(airline_code, @access_token) %>
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>
                 <% if segment['checkedBags'] %>
                   <p class="text-sm mb-4">
                     Checked luggage: <%= segment['checkedBags'] %> 🧳
-
                   </p>
                 <% end %>
               </div>
