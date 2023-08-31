@@ -1,8 +1,11 @@
 require 'net/http'
+require 'uri'
 require 'json'
 
 class FlightsController < ApplicationController  
-  helper_method :search_airlines_name
+
+  helper_method :search_airlines_name, :search_arilines_logo
+
   def search_results
     search_params # Call the method to set the instance variables
 
@@ -137,8 +140,24 @@ end
 
     if response.code == '200'
       airline_name = JSON.parse(response.body)['data'].first['businessName'].capitalize
+          # Display the airline_name value in the console
       return airline_name
     end
+  end
+
+  # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
+  def search_airlines_logo(airline_company_name)
+    url = URI("https://api.brandfetch.io/v2/brands/#{airline_company_name}.com")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(url)
+    request["accept"] = 'application/json'
+    request["Authorization"] = "Bearer #{ENV['BRANDFETCH_API_KEY']}"
+
+    response = http.request(request)
+    puts response.read_body
   end
   
   

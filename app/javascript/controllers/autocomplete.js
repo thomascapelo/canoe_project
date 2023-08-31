@@ -19,6 +19,7 @@ $(document).ready(function () {
       method: "POST",
       data: {
         grant_type: "client_credentials",
+
         client_id: "E3QJBG9aB36ZF3tKCopetWORIvV7NYAC",
         client_secret: "Cu94OhFnMVAWGuJo",
       },
