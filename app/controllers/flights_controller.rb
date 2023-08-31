@@ -3,7 +3,9 @@ require 'uri'
 require 'json'
 
 class FlightsController < ApplicationController  
+
   helper_method :search_airlines_name, :search_arilines_logo
+
   def search_results
     search_params # Call the method to set the instance variables
 
@@ -144,7 +146,7 @@ end
   end
 
   # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
-  def search_arilines_logo(airline_company_name)
+  def search_airlines_logo(airline_company_name)
     url = URI("https://api.brandfetch.io/v2/brands/#{airline_company_name}.com")
 
     http = Net::HTTP.new(url.host, url.port)
