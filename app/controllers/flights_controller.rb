@@ -1,4 +1,5 @@
 require 'net/http'
+require 'uri'
 require 'json'
 
 class FlightsController < ApplicationController  
@@ -143,9 +144,18 @@ end
   end
 
   # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
-  def search_arilines_logo(iata_airline_code)
-    logo_url = "https://content.airhex.com/content/logos/airlines_#{iata_airline_code}_125_50_r.png?proportions=keep"
-    return logo_url
+  def search_arilines_logo(airline_company_name)
+    url = URI("https://api.brandfetch.io/v2/brands/#{airline_company_name}.com")
+
+    http = Net::HTTP.new(url.host, url.port)
+    http.use_ssl = true
+
+    request = Net::HTTP::Get.new(url)
+    request["accept"] = 'application/json'
+    request["Authorization"] = "Bearer #{ENV['BRANDFETCH_API_KEY']}"
+
+    response = http.request(request)
+    puts response.read_body
   end
   
   
