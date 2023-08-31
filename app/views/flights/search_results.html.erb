@@ -23,7 +23,6 @@
         <% if segments %>
           <% operating_airline_codes = segments.map { |segment| segment['operating']&.dig('carrierCode') }.compact.uniq %>
           <% operating_airlines = operating_airline_codes.map { |code| search_airlines_name(code, @access_token) } %>
-          <% puts operating_airlines %>
           <% flight_price = flight['price'] %>
           <% segments.each do |segment| %>
             <% if segment['operating'] && segment['operating']['carrierCode'] %>
@@ -39,10 +38,9 @@
                 </p>
                 <%# Check Airline Operating the flights %>
                 <% operating_airlines.each do |operating_airline| %>
-                  <% airline_company_logo = search_airlines_logo(operating_airline) %>
+                  <% airline_company_logo = search_airlines_logo(operating_airline.split.first) %>
                   <p class="text-sm">
-                    <img src="<%= airline_company_logo %>" alt="<%= airline_code %> Logo" class="rounded">
-                    Flights operated by <%= search_airlines_name(airline_code, @access_token) %>
+                    <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="rounded">
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>

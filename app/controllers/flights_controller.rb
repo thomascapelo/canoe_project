@@ -4,7 +4,7 @@ require 'json'
 
 class FlightsController < ApplicationController  
 
-  helper_method :search_airlines_name, :search_arilines_logo
+  helper_method :search_airlines_name, :search_airlines_logo
 
   def search_results
     search_params # Call the method to set the instance variables
@@ -62,7 +62,7 @@ class FlightsController < ApplicationController
 def search_flights(origin, destination, departure_date, return_date, adults, travel_class, access_token)
   departure_date_str = departure_date.strftime('%Y-%m-%d')
 
-  max_results = 20
+  max_results = 5
 
   if return_date.nil?
     # One-way flight search
@@ -138,11 +138,13 @@ end
 
     response = http.request(request)
 
-    if response.code == '200'
-      airline_name = JSON.parse(response.body)['data'].first['businessName'].capitalize
-          # Display the airline_name value in the console
-      return airline_name
-    end
+  return 'API request failed' unless response.code == '200'
+
+  parsed_response = JSON.parse(response.body)
+  return 'No airline data available' unless parsed_response['data'] && !parsed_response['data'].empty?
+
+  airline_name = parsed_response['data'].first['businessName'].capitalize
+  airline_name
   end
 
   # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
@@ -158,6 +160,24 @@ end
 
     response = http.request(request)
     puts response.read_body
+    case response.code
+      when '200'
+        brand_data = JSON.parse(response.body)
+        logos = brand_data['logos']
+
+        light_svg_logo = logos.find do |logo|
+          logo['theme'] == 'light' && logo['formats'][0]['format'] == 'svg'
+        end
+
+        if light_svg_logo
+          return light_svg_logo['formats'][0]['src']
+        else
+          return 'No light SVG logo available'
+        end
+
+      else
+        return 'API request failed'
+      end
   end
   
   
