@@ -40,7 +40,7 @@
                 <% operating_airline_codes.each do |airline_code| %>
                   <% airline_company_logo = search_arilines_logo(airline_code) %>
                   <p class="text-sm">
-                    <img src="<%= airline_company_logo %>" alt="<%= airline_code %> Logo" class="">
+                    <img src="<%= airline_company_logo %>" alt="<%= airline_code %> Logo" class="rounded">
                     Flights operated by <%= search_airlines_name(airline_code, @access_token) %>
                   </p>
                 <% end %>
