@@ -27,28 +27,30 @@
           <% segments.each do |segment| %>
             <% if segment['operating'] && segment['operating']['carrierCode'] %>
               <!-- Flight info -->
-              <div class="flight-info">
-                <p>
-                  <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> 🛫 -
-                  <small><%= itinerary['duration'].strip[2..-1].downcase %></small> - 🛬
-                  <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
-                </p>
-                <p>
-                  <%= segment['departure']['iataCode'] %> - <%= segment['arrival']['iataCode'] %>
-                </p>
+              <div class="flight-info flex justify-between items-center" style= "justify-content: space-between;">
                 <%# Check Airline Operating the flights %>
                 <% operating_airlines.each do |operating_airline| %>
                   <%= puts operating_airline %>
                   <% airline_company_logo = search_airlines_logo(operating_airline) %>
                   <p>
-                    <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="w-10 h-10 rounded-full" style="height: 50px;width: 50px;">
+                    <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="rounded-full" style="height: 50px; width: 50px;">
                   </p>
                 <% end %>
+                <div>
+                  <p>
+                    <strong><%= Time.parse(segment['departure']['at']).strftime('%H:%M') %></strong> -
+                    <strong><%= Time.parse(segment['arrival']['at']).strftime('%H:%M') %></strong>
+                  </p>
+                  <p class='text-sm font-thin decoration-gray-50'>
+                    <%= segment['departure']['iataCode'] %> - <%= segment['arrival']['iataCode'] %>
+                  </p>
+                </div>
                 <%# Display the quantity of checked bags included for this segment %>
                 <% if segment['checkedBags'] %>
                   <p class="text-sm mb-4">
                     Checked luggage: <%= segment['checkedBags'] %> 🧳
                   </p>
+                  <small><%= itinerary['duration'].strip[2..-1].downcase %></small>
                 <% end %>
               </div>
             <% end %>
@@ -57,7 +59,7 @@
       </div>
     <% end %>
     <!-- Price display -->
-    <p class="mt-4">
+    <p class="mt-4 flex" style= "justify-content: flex-end;">
       <strong><%= flight['price'] %>€</strong>
     </p>
   </div>
