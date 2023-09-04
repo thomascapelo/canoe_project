@@ -40,8 +40,8 @@
                 <% operating_airlines.each do |operating_airline| %>
                   <%= puts operating_airline %>
                   <% airline_company_logo = search_airlines_logo(operating_airline) %>
-                  <p class="text-sm">
-                    <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="rounded">
+                  <p>
+                    <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="w-10 h-10 rounded-full" style="height: 50px;width: 50px;">
                   </p>
                 <% end %>
                 <%# Display the quantity of checked bags included for this segment %>
