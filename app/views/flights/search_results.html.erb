@@ -38,7 +38,8 @@
                 </p>
                 <%# Check Airline Operating the flights %>
                 <% operating_airlines.each do |operating_airline| %>
-                  <% airline_company_logo = search_airlines_logo(operating_airline.split.first) %>
+                  <%= puts operating_airline %>
+                  <% airline_company_logo = search_airlines_logo(operating_airline) %>
                   <p class="text-sm">
                     <img src="<%= airline_company_logo %>" alt="<%= operating_airline %>" class="rounded">
                   </p>

@@ -148,37 +148,42 @@ end
   end
 
   # # # SEARCH AIRLINE LOGO IN API Clearbit # # #
-  def search_airlines_logo(airline_company_name)
-    url = URI("https://api.brandfetch.io/v2/brands/#{airline_company_name}.com")
+def search_airlines_logo(airline_company_name)
 
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    # Encode the airline_company_name to ensure it's a valid URL component
+  # Replace spaces with %20 in the airline_company_name
+  encoded_name = airline_company_name.gsub(' ', '')
 
-    request = Net::HTTP::Get.new(url)
-    request["accept"] = 'application/json'
-    request["Authorization"] = "Bearer #{ENV['BRANDFETCH_API_KEY']}"
+  url = URI("https://api.brandfetch.io/v2/brands/#{encoded_name}.com")
 
-    response = http.request(request)
-    puts response.read_body
-    case response.code
-      when '200'
-        brand_data = JSON.parse(response.body)
-        logos = brand_data['logos']
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = true
 
-        light_svg_logo = logos.find do |logo|
-          logo['theme'] == 'light' && logo['formats'][0]['format'] == 'svg'
-        end
+  request = Net::HTTP::Get.new(url)
+  request["accept"] = 'application/json'
+  request["Authorization"] = "Bearer #{ENV['BRANDFETCH_API_KEY']}"
 
-        if light_svg_logo
-          return light_svg_logo['formats'][0]['src']
-        else
-          return 'No light SVG logo available'
-        end
+  response = http.request(request)
+  puts response.read_body
+  
+  case response.code
+  when '200'
+    brand_data = JSON.parse(response.body)
+    logos = brand_data['logos']
 
-      else
-        return 'API request failed'
-      end
+    return 'No logos available' unless logos.is_a?(Array) && logos.any?
+
+    first_logo = logos.first
+
+    return 'No logo image available' unless first_logo['formats'].is_a?(Array) && first_logo['formats'].any?
+
+    return first_logo['formats'].first['src']
+    
+  else
+    return 'API request failed'
   end
+end
+
   
   
   def calculate_flight_time(departure_date, arrival_date)
